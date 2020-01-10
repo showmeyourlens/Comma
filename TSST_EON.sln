@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CableCloud", "CableCloud\CableCloud.csproj", "{48CD8259-4625-47B9-86BD-F9426DF9F2F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CableCloud", "CableCloud", "{84765BC3-839B-4F88-B07D-6082F4201D1C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientNode", "ClientNode\ClientNode.csproj", "{4DF4C42C-B93B-4056-A6BF-CB2F664F1B24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientNode", "ClientNode", "{8B915056-0098-4ABA-8F04-26E5E3D866C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkNode", "NetworkNode\NetworkNode.csproj", "{75E38927-8A58-470E-9A75-1CD5E43D2D2B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C7839F1C-B0D1-4B46-BD02-9B379B61CDF2} = {C7839F1C-B0D1-4B46-BD02-9B379B61CDF2}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetworkNode", "NetworkNode", "{63A4C80A-8883-435C-9BD4-BB822C42D0BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolsLibrary", "ToolsLibrary\ToolsLibrary.csproj", "{C7839F1C-B0D1-4B46-BD02-9B379B61CDF2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetworkCallController", "NetworkCallController", "{7B0CC628-6C9C-4490-99CA-E80126166050}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkCallController", "NetworkCallController\NetworkCallController.csproj", "{6E3217E3-8905-4C4D-B01F-C2095D8A23B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Subnetwork", "Subnetwork", "{2370BDD0-458B-4206-AFF1-5DD43D650F93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subnetwork", "Subnetwork\Subnetwork.csproj", "{98C9970C-FE82-4457-9229-2C02E14BC300}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48CD8259-4625-47B9-86BD-F9426DF9F2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48CD8259-4625-47B9-86BD-F9426DF9F2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48CD8259-4625-47B9-86BD-F9426DF9F2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48CD8259-4625-47B9-86BD-F9426DF9F2F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF4C42C-B93B-4056-A6BF-CB2F664F1B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF4C42C-B93B-4056-A6BF-CB2F664F1B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF4C42C-B93B-4056-A6BF-CB2F664F1B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF4C42C-B93B-4056-A6BF-CB2F664F1B24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75E38927-8A58-470E-9A75-1CD5E43D2D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75E38927-8A58-470E-9A75-1CD5E43D2D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75E38927-8A58-470E-9A75-1CD5E43D2D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75E38927-8A58-470E-9A75-1CD5E43D2D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7839F1C-B0D1-4B46-BD02-9B379B61CDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7839F1C-B0D1-4B46-BD02-9B379B61CDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7839F1C-B0D1-4B46-BD02-9B379B61CDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7839F1C-B0D1-4B46-BD02-9B379B61CDF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E3217E3-8905-4C4D-B01F-C2095D8A23B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E3217E3-8905-4C4D-B01F-C2095D8A23B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E3217E3-8905-4C4D-B01F-C2095D8A23B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E3217E3-8905-4C4D-B01F-C2095D8A23B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98C9970C-FE82-4457-9229-2C02E14BC300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98C9970C-FE82-4457-9229-2C02E14BC300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98C9970C-FE82-4457-9229-2C02E14BC300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98C9970C-FE82-4457-9229-2C02E14BC300}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{48CD8259-4625-47B9-86BD-F9426DF9F2F5} = {84765BC3-839B-4F88-B07D-6082F4201D1C}
+		{4DF4C42C-B93B-4056-A6BF-CB2F664F1B24} = {8B915056-0098-4ABA-8F04-26E5E3D866C1}
+		{75E38927-8A58-470E-9A75-1CD5E43D2D2B} = {63A4C80A-8883-435C-9BD4-BB822C42D0BA}
+		{6E3217E3-8905-4C4D-B01F-C2095D8A23B3} = {7B0CC628-6C9C-4490-99CA-E80126166050}
+		{98C9970C-FE82-4457-9229-2C02E14BC300} = {2370BDD0-458B-4206-AFF1-5DD43D650F93}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {151227CF-5D7C-4E63-B4B2-E17EC30A1606}
+	EndGlobalSection
+EndGlobal
