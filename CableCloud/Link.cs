@@ -9,6 +9,9 @@ namespace CableCloud
         public int LinkId { get; private set; }
         public string[] ConnectedNodes { get; private set; }
         public int[] ConnectedPorts { get; private set; }
+
+        protected float waga;
+
         public Link(int linkId, string firstNode, string secondNode, int firstNodePort, int secondNodePort)
         {
             this.LinkId = linkId;
@@ -18,6 +21,7 @@ namespace CableCloud
             this.ConnectedPorts = new int[2];
             this.ConnectedPorts[0] = firstNodePort;
             this.ConnectedPorts[1] = secondNodePort;
+            this.waga = 0; ////////////
         }
         
     }

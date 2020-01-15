@@ -4,6 +4,8 @@ using System.Text;
 
 namespace NetworkNode
 {
+
+    // klasa pewnie do ogarniecia gdy zrobimy Routing Controller
     public class RoutingInfo
     {
         public List<RouterLabel> routerLabels;
@@ -64,7 +66,6 @@ namespace NetworkNode
             this.nextActionId = nextActionId.Equals("-") ? 0 : Int32.Parse(nextActionId);
         }
     }
-
 
     enum Actions
     {

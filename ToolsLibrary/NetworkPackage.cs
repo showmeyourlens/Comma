@@ -4,47 +4,78 @@ using System.Runtime.Serialization;
 
 namespace TSST_EON
 {
-    /* Sprytna klasa żeby nie kleić stringa jak upośledzone dziecko z 1 semestru
-     * Jak dodajecie jakieś pole, to musi się pojawić w klasie, we wszystkich konstruktorach, w GetObjectData, i w konstruktorze serializatora też
-     * Może i dużo roboty, ale przynajmniej się nie zjebie.
-     * 
-     * Zróbcie konstruktor kopiujący na wszelki wypadek, zwłaszcza jak będą listy/tablice pakietów.
-     * 
-     * W sumie zamiast helloMessage i managementMessage powinien być enum, cała ta klasa mogłaby być trochę lepiej zrobiona...
-     * ...ale już chuj.
-     * 
-     */
-
+    /// <summary>
+    /// Pakiecik
+    /// </summary>
     [Serializable()]
-    public class NetworkPackage : ISerializable//Pakiecik MPLSowy bardzo zdrowy
+    public class NetworkPackage : ISerializable
     {
+        /// <summary>
+        /// ID elementu wysyłającego pakiet
+        /// </summary>
         public string sendingClientId;
+        /// <summary>
+        /// aktualny adres IP przez jaki przechodzi pakiet
+        /// </summary>
         public string currentIP;
+        /// <summary>
+        /// aktualny mr  portu przez jaki przechodzi pakiet
+        /// <summary>
         public int currentPort;
+        /// ID klienta odbierającego pakiet
+        /// </summary>
         public string receivingClientId;
+        /// <summary>
+        /// adres klienta odbierającego pakiet
+        /// </summary>
         public string receivingClientAddress;
+        /// <summary>
+        /// zawartość wiadomosci
+        /// </summary>
         public string message;
+        /// <summary>
+        ///czestotliwosc
+        /// </summary>
+        public short frequency { get; set; }
+        /// <summary>
+        /// pasmo zajete do przeslania pakietu
+        /// </summary>
+        public short band { get; set; }
+        /// <summary>
+        /// czy wiadomosc typu hello?
+        /// </summary>
         public bool helloMessage;
+        /// <summary>
+        /// czy wiadomosc z systemu zarzadzajacego? //jeszcze zostawiam, ale przerobi sie w NodeCloudCommunication
+        /// </summary>
         public bool managementMessage;
-        public Stack<int> labelStack;
+        /// <summary>
+        /// modulacja {64QAM, 32QAM..., BPSK}
+        /// </summary>
+        public string modulation;
+        /// <summary>
+        /// slownik okreslajacy ile razy spadnie pasmo zaleznie od modulacji
+        /// </summary>
+        public Dictionary<string, int> modu = new Dictionary<string, int>(){
+            {"64QAM", 6 },  {"32QAM", 5}, {"16QAM", 4 }, {"8QAM", 3 }, {"4QAM", 2}, {"BPSK", 1 }
+        };
 
         private NetworkPackage()
         {
-            this.labelStack = new Stack<int>();
         }
 
         // Wiadomość typu klient-klient
-        public NetworkPackage(string sendingClientId, string sendingClientIP, int sendingClientPort, string receivingClientId, string message, int startLabel)
+        public NetworkPackage(string sendingClientId, string sendingClientIP, int sendingClientPort, string receivingClientId, short frequency, short band, string message)
         {
             this.sendingClientId = sendingClientId;
             this.currentIP = sendingClientIP;
             this.currentPort = sendingClientPort;
             this.receivingClientId = receivingClientId;
             this.message = message;
+            this.frequency = frequency;
+            this.band = band;
             this.helloMessage = false;
             this.managementMessage = false;
-            this.labelStack = new Stack<int>();
-            this.labelStack.Push(startLabel);
         }
 
         // Wiadomość typu HELLO od węzła sieci
@@ -57,33 +88,14 @@ namespace TSST_EON
             this.currentPort = clientPort;
             this.helloMessage = true;
             this.managementMessage = false;
-            this.labelStack = new Stack<int>();
         }
 
-        // Wiadomość HELLO od węzła zarządzającego
-        public NetworkPackage(string sendingClientId)
+        public NetworkPackage(short frequency, short band, string message)
         {
-            this.sendingClientId = sendingClientId;
-            this.currentIP = "";
-            this.currentPort = 0;
-            this.receivingClientId = "Cloud";
             this.message = "";
-            this.helloMessage = true;
-            this.managementMessage = true;
-            this.labelStack = new Stack<int>();
-        }
+            this.frequency = frequency;
+            this.band = band;
 
-        // Komunikacja z węzłem zarządzającym
-        public NetworkPackage(string sendingClientId, string receivingClientId, string message)
-        {
-            this.sendingClientId = sendingClientId;
-            this.currentIP = "";
-            this.currentPort = 0;
-            this.receivingClientId = receivingClientId;
-            this.message = message;
-            this.helloMessage = false;
-            this.managementMessage = true;
-            this.labelStack = new Stack<int>();
         }
 
         // Konstruktor do deserializatora
@@ -96,8 +108,8 @@ namespace TSST_EON
             message = (string)serializationInfo.GetValue("message", typeof(string));
             helloMessage = (bool)serializationInfo.GetValue("helloMessage", typeof(bool));
             managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
-            labelStack = (Stack<int>)serializationInfo.GetValue("labelStack", typeof(Stack<int>));
         }
+
 
         public NetworkPackage CloneNetworkPackage()
         {
@@ -108,6 +120,8 @@ namespace TSST_EON
             result.currentPort = this.currentPort;
             result.receivingClientId = this.receivingClientId;
             result.message = this.message;
+            result.frequency = this.frequency;
+            result.band = this.band;
             result.helloMessage = false;
             result.managementMessage = false;
 
@@ -128,7 +142,6 @@ namespace TSST_EON
             serializationInfo.AddValue("message", message);
             serializationInfo.AddValue("helloMessage", helloMessage);
             serializationInfo.AddValue("managementMessage", managementMessage);
-            serializationInfo.AddValue("labelStack", labelStack);
         }
     }
 }

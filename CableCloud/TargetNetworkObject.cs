@@ -20,10 +20,10 @@ namespace CableCloud
             this.TargetObjectId = objectId;
         }
 
-        // only for management node
+        /*// only for management node
         public TargetNetworkObject(string managementNodeName)
         {
             this.TargetObjectId = managementNodeName;
-        } 
+        } */
     }
 }

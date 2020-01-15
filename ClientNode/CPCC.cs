@@ -4,7 +4,6 @@ using System.Text;
 
 namespace ClientNode
 {
-    /// Management Agent
     class CPCC
     {
 

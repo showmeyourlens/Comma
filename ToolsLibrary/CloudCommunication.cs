@@ -61,7 +61,6 @@ namespace TSST_EON
                 state.WorkSocket = (Socket)ar.AsyncState;
                 cloudSocket = state.WorkSocket;
                 cloudSocket.EndConnect(ar);
-                // Sending HELLO message to cloud
                 Send(CreateHelloMessage());
 
                 Task.Run(() => Receive(cloudSocket));              

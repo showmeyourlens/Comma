@@ -6,5 +6,7 @@ namespace NetworkCallController
 {
     class Configuration
     {
+
+
     }
 }
