@@ -4,8 +4,12 @@
     "\\CableCloud",
     "\\CableCloud\\bin",
     "\\CableCloud\\bin\\Debug",
-    "\\CableCloud\\bin\\Debug\\netcoreapp3.0",
-    "\\ClientNode"
+    "\\ClientNode",
+    "\\NetworkCallController",
+    "\\NetworkNode",
+    "\\Subnetwork",
+    "\\ToolsLibrary"
   ],
+  "SelectedNode": "\\CableCloud\\CableCloud.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -27,6 +27,7 @@ namespace TSST_EON
         public bool helloMessage;
         public bool managementMessage;
         public Stack<int> labelStack;
+        public int capacity;
 
         private NetworkPackage()
         {
@@ -43,6 +44,7 @@ namespace TSST_EON
             this.message = message;
             this.helloMessage = false;
             this.managementMessage = false;
+            this.capacity = 0;
             this.labelStack = new Stack<int>();
             this.labelStack.Push(startLabel);
         }
@@ -57,6 +59,7 @@ namespace TSST_EON
             this.currentPort = clientPort;
             this.helloMessage = true;
             this.managementMessage = false;
+            this.capacity = 0;
             this.labelStack = new Stack<int>();
         }
 
@@ -70,6 +73,7 @@ namespace TSST_EON
             this.message = "";
             this.helloMessage = true;
             this.managementMessage = true;
+            this.capacity = 0;
             this.labelStack = new Stack<int>();
         }
 
@@ -83,7 +87,22 @@ namespace TSST_EON
             this.message = message;
             this.helloMessage = false;
             this.managementMessage = true;
+            this.capacity = 0;
             this.labelStack = new Stack<int>();
+        }
+
+        //Wiadomość od Ncc do Subnetwork
+        public NetworkPackage(string sendingClientId, string sendingClientIP, string receivingClientId, int capacity)
+        {
+            this.sendingClientId = sendingClientId;
+            this.currentIP = sendingClientIP;
+            this.currentPort = 0;
+            this.receivingClientId = receivingClientId;
+            this.message = "";
+            this.helloMessage = false;
+            this.managementMessage = false;
+            this.labelStack = new Stack<int>();
+            this.capacity = capacity;
         }
 
         // Konstruktor do deserializatora
@@ -97,6 +116,7 @@ namespace TSST_EON
             helloMessage = (bool)serializationInfo.GetValue("helloMessage", typeof(bool));
             managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
             labelStack = (Stack<int>)serializationInfo.GetValue("labelStack", typeof(Stack<int>));
+            capacity = (int)serializationInfo.GetValue("capacity", typeof(int));
         }
 
         public NetworkPackage CloneNetworkPackage()
@@ -110,6 +130,7 @@ namespace TSST_EON
             result.message = this.message;
             result.helloMessage = false;
             result.managementMessage = false;
+            result.capacity = 0;
 
             return result;
         }
@@ -129,6 +150,7 @@ namespace TSST_EON
             serializationInfo.AddValue("helloMessage", helloMessage);
             serializationInfo.AddValue("managementMessage", managementMessage);
             serializationInfo.AddValue("labelStack", labelStack);
+            serializationInfo.AddValue("capacity", capacity);
         }
     }
 }
