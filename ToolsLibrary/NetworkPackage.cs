@@ -62,6 +62,13 @@ namespace TSST_EON
 
         private NetworkPackage()
         {
+
+        }
+
+
+        private NetworkPackage(string message)
+        {
+            this.message = message;
         }
 
         // Wiadomość typu klient-klient
@@ -110,6 +117,10 @@ namespace TSST_EON
             managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
         }
 
+        public NetworkPackage(string message)
+        {
+            this.message = message;
+        }
 
         public NetworkPackage CloneNetworkPackage()
         {
