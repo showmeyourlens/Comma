@@ -35,7 +35,7 @@ namespace TSST_EON
             this.emulationNodeAddress = nodeEmulationAddress;
             this.emulationNodePort = Int32.Parse(nodeEmulationPort);
             this.Reader = new FIBXMLReader();
-            this.routingInfo = Reader.ReadFIB("ManagementSystem.xml", nodeId);
+            //this.routingInfo;
             this.sendDone = new ManualResetEvent(false);
             this.isRouterUp = true;
         }
@@ -175,6 +175,7 @@ namespace TSST_EON
         {
             return new NetworkPackage(emulationNodeId, emulationNodeAddress, emulationNodePort);
         }
+
         private void ProcessReceivedClientMessage(NetworkPackage networkPackage)
         {
             // TimeStamp.WriteLine("Received message from {0} to {1}.", networkPackage.sendingClientId, networkPackage.receivingClientId);

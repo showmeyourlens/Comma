@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using ToolsLibrary;
 using TSST_EON;
 
-namespace TSST_MPLS
+namespace TSST_EON
 {
     class CableCloud
     {
@@ -248,7 +248,7 @@ namespace TSST_MPLS
                 targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[1], link.ConnectedPorts[0], link.ConnectedNodes[0]));
             }
             // elementy zarządzające. Nie muszą mieć adresów, no bo bez przesady.
-            targetNetworkObjects.Add(new TargetNetworkObject("MGMT"));
+            //targetNetworkObjects.Add(new TargetNetworkObject("MGMT"));
 
         }
 
