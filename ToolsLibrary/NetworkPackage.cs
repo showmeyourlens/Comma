@@ -14,6 +14,8 @@ namespace TSST_EON
         /// ID elementu wysyłającego pakiet
         /// </summary>
         public string sendingClientId;
+
+
         /// <summary>
         /// aktualny adres IP przez jaki przechodzi pakiet
         /// </summary>
@@ -56,6 +58,7 @@ namespace TSST_EON
         /// <summary>
         /// slownik okreslajacy ile razy spadnie pasmo zaleznie od modulacji
         /// </summary>
+      
         public Dictionary<string, int> modu = new Dictionary<string, int>(){
             {"64QAM", 6 },  {"32QAM", 5}, {"16QAM", 4 }, {"8QAM", 3 }, {"4QAM", 2}, {"BPSK", 1 }
         };
@@ -64,7 +67,6 @@ namespace TSST_EON
         {
 
         }
-
 
         private NetworkPackage(string message)
         {
@@ -83,9 +85,9 @@ namespace TSST_EON
             this.band = band;
             this.helloMessage = false;
             this.managementMessage = false;
-            this.capacity = 0;
-            this.labelStack = new Stack<int>();
-            this.labelStack.Push(startLabel);
+            //this.capacity = 0;
+            //this.labelStack = new Stack<int>();
+            //this.labelStack.Push(startLabel);
         }
 
         // Wiadomość typu HELLO od węzła sieci
@@ -98,8 +100,8 @@ namespace TSST_EON
             this.currentPort = clientPort;
             this.helloMessage = true;
             this.managementMessage = false;
-            this.capacity = 0;
-            this.labelStack = new Stack<int>();
+            //this.capacity = 0;
+            //this.labelStack = new Stack<int>();
         }
 
         public NetworkPackage(short frequency, short band, string message)
@@ -109,11 +111,11 @@ namespace TSST_EON
             this.band = band;
             this.helloMessage = true;
             this.managementMessage = true;
-            this.capacity = 0;
-            this.labelStack = new Stack<int>();
+            //this.capacity = 0;
+            //this.labelStack = new Stack<int>();
         }
 
-        }
+     
 
         // Konstruktor do deserializatora
         public NetworkPackage(SerializationInfo serializationInfo, StreamingContext context)
@@ -125,13 +127,8 @@ namespace TSST_EON
             message = (string)serializationInfo.GetValue("message", typeof(string));
             helloMessage = (bool)serializationInfo.GetValue("helloMessage", typeof(bool));
             managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
-            labelStack = (Stack<int>)serializationInfo.GetValue("labelStack", typeof(Stack<int>));
-            capacity = (int)serializationInfo.GetValue("capacity", typeof(int));
-        }
-
-        public NetworkPackage(string message)
-        {
-            this.message = message;
+            //labelStack = (Stack<int>)serializationInfo.GetValue("labelStack", typeof(Stack<int>));
+            //capacity = (int)serializationInfo.GetValue("capacity", typeof(int));
         }
 
         public NetworkPackage CloneNetworkPackage()
@@ -147,7 +144,7 @@ namespace TSST_EON
             result.band = this.band;
             result.helloMessage = false;
             result.managementMessage = false;
-            result.capacity = 0;
+            //result.capacity = 0;
 
             return result;
         }
@@ -166,8 +163,8 @@ namespace TSST_EON
             serializationInfo.AddValue("message", message);
             serializationInfo.AddValue("helloMessage", helloMessage);
             serializationInfo.AddValue("managementMessage", managementMessage);
-            serializationInfo.AddValue("labelStack", labelStack);
-            serializationInfo.AddValue("capacity", capacity);
+            //serializationInfo.AddValue("labelStack", labelStack);
+            //serializationInfo.AddValue("capacity", capacity);
         }
     }
 }

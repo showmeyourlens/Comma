@@ -5,7 +5,7 @@ using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetworkNode
+namespace TSST_EON
 {
     /// <summary>
     /// Tabela z zajętymi i wolnymi częstotliwościami.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetworkNode
+namespace TSST_EON
 {
     /// <summary>
     /// Klasa z rzedem tabeli zajetych pasm na wyjsciu routera.
