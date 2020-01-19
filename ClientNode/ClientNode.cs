@@ -8,6 +8,15 @@ namespace ClientNode
     class ClientNode
     {
         public List<ClientSenderConfig> contactList;
+        /// <summary>
+        /// wiadomosc klienta
+        /// </summary>
+        public string MyMessage;
+        /// <summary>
+        /// wymagana przeplywnosc
+        /// </summary>
+        public int demandedCapacity;
+
         static void Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.White;
@@ -35,10 +44,17 @@ namespace ClientNode
                 cloudCommunicator.Start();
                 Console.WriteLine("Type number of client for sending message, c to close");
                 bool isFinish = true;
-                char key;
                 while (isFinish)
                 {
-                    key = Console.ReadKey().KeyChar;
+                    Console.WriteLine("Message: \n");
+                    clientNode.MyMessage = Console.ReadLine();
+
+                    Console.WriteLine("\n\nDemanded capacity (in Gb/s): \n");
+                    string capacity_string = Console.ReadLine();
+                    clientNode.demandedCapacity = Convert.ToInt32(capacity_string);
+
+                    Console.WriteLine("\n\nChoose ID destination receiver of message: ");
+                    char key = Console.ReadKey().KeyChar;
                     ClientSenderConfig contact = clientNode.contactList.Find(x => x.key == key);
                     if (contact != null)
                     {
@@ -47,11 +63,9 @@ namespace ClientNode
                         cloudCommunicator.emulationNodeAddress,
                         cloudCommunicator.emulationNodePort,
                         contact.receiverId,
-                        "Very important message",
-                        contact.label
-                        ));
-                        Console.WriteLine("Message sent");
-
+                        "Very important message") //+contact.label
+                        );
+                        Console.WriteLine("/nMessage sent!");
                     }
 
                 }
@@ -111,3 +125,6 @@ namespace ClientNode
 
     }
 }
+
+
+
