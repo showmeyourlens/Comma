@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TSST_EON
+namespace CableCloud
 {
     /// <summary>
     /// Klasa z rzedem tabeli zajetych pasm na wyjsciu routera.

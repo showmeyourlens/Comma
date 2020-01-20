@@ -6,7 +6,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using ToolsLibrary;
-using TSST_EON;
+using CableCloud;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -47,7 +47,7 @@ namespace NetworkCallController
             {
                 Server.Bind(new IPEndPoint(NetworkCallControllerAddress, NetworkCallControllerPort));
                 Server.Listen(100);
-                TimeStamp.WriteLine("Network Call Controler Startuje");
+                TimeStamp.WriteLine("Network Call Controler startuje");
                 while (true)
                 {
                     AllDone.Reset();

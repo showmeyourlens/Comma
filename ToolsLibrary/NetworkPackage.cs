@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TSST_EON
+namespace CableCloud
 {
     /// <summary>
     /// Pakiecik
@@ -58,17 +58,16 @@ namespace TSST_EON
         /// <summary>
         /// slownik okreslajacy ile razy spadnie pasmo zaleznie od modulacji
         /// </summary>
-      
         public Dictionary<string, int> modu = new Dictionary<string, int>(){
             {"64QAM", 6 },  {"32QAM", 5}, {"16QAM", 4 }, {"8QAM", 3 }, {"4QAM", 2}, {"BPSK", 1 }
         };
 
-        private NetworkPackage()
+        public NetworkPackage()
         {
 
         }
 
-        private NetworkPackage(string message)
+        public NetworkPackage(string message)
         {
             this.message = message;
         }

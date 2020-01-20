@@ -25,7 +25,8 @@ namespace CableCloud
                         coll.Item(0).InnerText, //firstObjectId
                         coll.Item(2).InnerText, // secondObjectId
                         Int32.Parse(coll.Item(1).InnerText), //firstObjectPort
-                        Int32.Parse(coll.Item(3).InnerText) //secondObjectPort
+                        Int32.Parse(coll.Item(3).InnerText), //secondObjectPort
+                        Int32.Parse(coll.Item(4).InnerText) //length <-----trzeba dodac dlugosci do XML !
                         );
                     
                     result.Add(readLink);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 
-namespace TSST_EON
+namespace CableCloud
 {
     public class ReceiverState
     {
