@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
 
-namespace TSST_EON
+namespace CableCloud
 {
     public class CloudCommunication
     {

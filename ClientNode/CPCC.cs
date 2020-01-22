@@ -9,8 +9,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
+using CableCloud;
 
-namespace TSST_EON
+namespace ClientNode
 {
     //Calling Party Call Controller
     public class CPCC
@@ -138,7 +139,7 @@ namespace TSST_EON
         }
 
         //Wyslanie wiadomosci CallRequest
-        public void sendCallRequest(string senderid, string receiverid, string demandedCapacity, string NCC_ip)
+        public void sendCallRequest(string senderid, string receiverid, string demandedCapacity, string NCCip)
         {
             try
             {
