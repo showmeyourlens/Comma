@@ -4,7 +4,7 @@
     ".NETCoreApp,Version=v3.0": {
       "ToolsLibrary/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v3.0",
+        "framework": ".NETFramework,Version=v4.7.2",
         "compile": {
           "bin/placeholder/ToolsLibrary.dll": {}
         },
@@ -34,11 +34,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\01133404\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
+      "projectUniqueName": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
       "projectName": "CableCloud",
-      "projectPath": "C:\\Users\\01133404\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
+      "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
       "packagesPath": "C:\\Users\\01133404\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\01133404\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\obj\\",
+      "outputPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -59,8 +59,8 @@
       "frameworks": {
         "netcoreapp3.0": {
           "projectReferences": {
-            "C:\\Users\\01133404\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
-              "projectPath": "C:\\Users\\01133404\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj"
+            "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
+              "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj"
             }
           }
         }

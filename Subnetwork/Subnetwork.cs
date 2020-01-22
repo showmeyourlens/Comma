@@ -14,10 +14,11 @@ namespace Subnetwork
 {
     class Subnetwork
     {
+        public ManualResetEvent AllDone = new ManualResetEvent(false);
         IPAddress SubnetworkAddress;
         int SubnetworkPort;
         string SubnetworkId;
-        Socket NccSocket;
+        Socket SubnetworkSocket;
         ManualResetEvent sendDone;
         static void Main(string[] args)
         {
@@ -39,53 +40,41 @@ namespace Subnetwork
         }
         private void StartSubentwork()
         {
-            NccSocket = new Socket(SubnetworkAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            if (SubnetworkId == "Subnetwork_1")
-            {
-                try
-                {
-                    NccSocket.Bind(new IPEndPoint(SubnetworkAddress, SubnetworkPort));
-                    NccSocket.BeginConnect(new IPEndPoint(IPAddress.Parse("127.0.0.10"), 63800), new AsyncCallback(ConnectCallback), NccSocket);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-            else if (SubnetworkId == "Subnetwork_2")
-            {
-                try
-                {
-                    NccSocket.Bind(new IPEndPoint(SubnetworkAddress, SubnetworkPort));
-                    NccSocket.BeginConnect(new IPEndPoint(IPAddress.Parse("128.0.0.10"), 63800), new AsyncCallback(ConnectCallback), NccSocket);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-        }
-        private void ConnectCallback(IAsyncResult ar)
-        {
+            SubnetworkSocket = new Socket(SubnetworkAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             try
-            {
-                ReceiverState state = new ReceiverState();
-                state.WorkSocket = (Socket)ar.AsyncState;
-                NccSocket = state.WorkSocket;
-                NccSocket.EndConnect(ar);
-
-                Task.Run(() => Receive(NccSocket));
-            }
-            catch (ObjectDisposedException e0)
-            {
-                Console.WriteLine(e0);
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine(e);
-            }
+                {
+                    SubnetworkSocket.Bind(new IPEndPoint(SubnetworkAddress, SubnetworkPort));
+                    SubnetworkSocket.Listen(100);
+                    TimeStamp.WriteLine("Subnetwork is starting");
+                    while (true)
+                    {
+                        AllDone.Reset();
+                        SubnetworkSocket.BeginAccept(new AsyncCallback(AcceptCallback), SubnetworkSocket);
+                        AllDone.WaitOne();
+                    }
+                }
+            catch (Exception e)
+                {
+                    TimeStamp.WriteLine(e.Message);
+                }
         }
+
+        private void AcceptCallback(IAsyncResult ar)
+        {
+            // Signal the main thread to continue.  
+            AllDone.Set();
+
+            // Get the socket that handles the client request.  
+            Socket listener = (Socket)ar.AsyncState;
+            Socket handler = listener.EndAccept(ar);
+
+            // Create the state object.  
+            ReceiverState state = new ReceiverState();
+            state.WorkSocket = handler;
+            handler.BeginReceive(state.Buffer, 0, ReceiverState.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+        }
+
+
 
         private void ReadCallback(IAsyncResult ar)
         {
@@ -123,9 +112,9 @@ namespace Subnetwork
         {
             sendDone.Reset();
             ReceiverState state = new ReceiverState();
-            state.WorkSocket = NccSocket;
+            state.WorkSocket = SubnetworkSocket;
             state.Buffer = SerializeMessage(networkPackage);
-            NccSocket.BeginSend(state.Buffer, 0, state.Buffer.Length, 0, new AsyncCallback(SendCallback), state);
+            SubnetworkSocket.BeginSend(state.Buffer, 0, state.Buffer.Length, 0, new AsyncCallback(SendCallback), state);
             sendDone.WaitOne();
         }
 

@@ -1,0 +1,7 @@
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\obj\Debug\net472\ToolsLibrary.csprojAssemblyReference.cache
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\obj\Debug\net472\ToolsLibrary.AssemblyInfoInputs.cache
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\obj\Debug\net472\ToolsLibrary.AssemblyInfo.cs
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\bin\Debug\net472\ToolsLibrary.dll
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\bin\Debug\net472\ToolsLibrary.pdb
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\obj\Debug\net472\ToolsLibrary.dll
+C:\Users\01133404\source\repos\Wilku97\TSST_EON\ToolsLibrary\obj\Debug\net472\ToolsLibrary.pdb

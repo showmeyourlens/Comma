@@ -29,6 +29,9 @@ namespace TSST_EON
         /// adres klienta odbierającego pakiet
         /// </summary>
         public string receivingClientAddress;
+
+        public string recivingClientIP;
+
         /// <summary>
         /// zawartość wiadomosci
         /// </summary>
@@ -56,9 +59,17 @@ namespace TSST_EON
         /// <summary>
         /// slownik okreslajacy ile razy spadnie pasmo zaleznie od modulacji
         /// </summary>
-        public Dictionary<string, int> modu = new Dictionary<string, int>(){
+        public Dictionary<string, int> modu = new Dictionary<string, int>()
+        {
             {"64QAM", 6 },  {"32QAM", 5}, {"16QAM", 4 }, {"8QAM", 3 }, {"4QAM", 2}, {"BPSK", 1 }
         };
+        public int capacity;
+
+        public bool fromCPCC;
+
+        public bool fromNcc;
+
+        string slots;
 
         private NetworkPackage()
         {
@@ -78,14 +89,15 @@ namespace TSST_EON
             this.currentIP = sendingClientIP;
             this.currentPort = sendingClientPort;
             this.receivingClientId = receivingClientId;
+            this.recivingClientIP = null;
             this.message = message;
             this.frequency = frequency;
             this.band = band;
             this.helloMessage = false;
             this.managementMessage = false;
             this.capacity = 0;
-            this.labelStack = new Stack<int>();
-            this.labelStack.Push(startLabel);
+            this.fromCPCC = false;
+            this.fromNcc = false;
         }
 
         // Wiadomość typu HELLO od węzła sieci
@@ -95,11 +107,78 @@ namespace TSST_EON
             this.currentIP = sendingClientIP;
             this.message = "";
             this.receivingClientId = "Cloud";
+            this.recivingClientIP = null;
             this.currentPort = clientPort;
             this.helloMessage = true;
             this.managementMessage = false;
             this.capacity = 0;
-            this.labelStack = new Stack<int>();
+            this.fromCPCC = false;
+            this.fromNcc = false;
+        }
+
+        // Wiadomość typu CallRequest_req od cpcc do ncc
+        public NetworkPackage(string sendingClientId, string receivingClientId, int sendingClientPort, int capacity)
+        {
+            this.sendingClientId = sendingClientId;
+            this.currentIP = null;
+            this.message = "CallRequest_req";
+            this.receivingClientId = receivingClientId;
+            this.recivingClientIP = null;
+            this.currentPort = sendingClientPort;
+            this.helloMessage = false;
+            this.managementMessage = false;
+            this.capacity = capacity;
+            this.fromCPCC = true;
+            this.fromNcc = false;
+        }
+        //Wiadomość typu ConnectionRequest_req od pierwszego w kolejności ncc do subnetworku
+        public NetworkPackage(string sendingClientIP, string receivingClientIP, int capacity, bool fromNcc)
+        {
+            this.sendingClientId = null;
+            this.currentIP = sendingClientIP;
+            this.message = "ConnectionRequest_req";
+            this.receivingClientId = null;
+            this.recivingClientIP = receivingClientIP;
+            this.currentPort = 0;
+            this.helloMessage = true;
+            this.managementMessage = false;
+            this.capacity = capacity;
+            this.fromCPCC = false;
+            this.fromNcc = fromNcc;
+        }
+
+        //Wiadomość typu ConnectionRequest_rsp subnetworku do pierwszego w kolejności ncc
+        public NetworkPackage(string sendingClientIP, string receivingClientIP, string slots )
+        {
+            this.sendingClientId = null;
+            this.currentIP = sendingClientIP;
+            this.message = "ConnectionRequest_rsp";
+            this.receivingClientId = null;
+            this.recivingClientIP = receivingClientIP;
+            this.currentPort = 0;
+            this.helloMessage = true;
+            this.managementMessage = false;
+            this.capacity = 0;
+            this.fromCPCC = false;
+            this.fromNcc = false;
+            this.slots = slots;
+        }
+
+        //Wiadomość typu CallCoordination_req od pierwszego w kolejności ncc do drugiego
+        public NetworkPackage(string sendingClientIP, string receivingClientIP, string slots, bool fromNcc)
+        {
+            this.sendingClientId = null;
+            this.currentIP = sendingClientIP;
+            this.message = "CallCoordination_req";
+            this.receivingClientId = null;
+            this.recivingClientIP = receivingClientIP;
+            this.currentPort = 0;
+            this.helloMessage = true;
+            this.managementMessage = false;
+            this.capacity = 0;
+            this.fromCPCC = false;
+            this.fromNcc = fromNcc;
+            this.slots = slots;
         }
 
         public NetworkPackage(short frequency, short band, string message)
@@ -110,10 +189,12 @@ namespace TSST_EON
             this.helloMessage = true;
             this.managementMessage = true;
             this.capacity = 0;
-            this.labelStack = new Stack<int>();
+            this.fromCPCC = false;
+            this.fromNcc = false;
+            this.recivingClientIP = null;
         }
 
-        }
+
 
         // Konstruktor do deserializatora
         public NetworkPackage(SerializationInfo serializationInfo, StreamingContext context)
@@ -125,14 +206,13 @@ namespace TSST_EON
             message = (string)serializationInfo.GetValue("message", typeof(string));
             helloMessage = (bool)serializationInfo.GetValue("helloMessage", typeof(bool));
             managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
-            labelStack = (Stack<int>)serializationInfo.GetValue("labelStack", typeof(Stack<int>));
             capacity = (int)serializationInfo.GetValue("capacity", typeof(int));
+            fromCPCC = (bool)serializationInfo.GetValue("fromCPCC", typeof(bool));
+            fromNcc = (bool)serializationInfo.GetValue("fromNcc",typeof(bool));
+            recivingClientIP = (string)serializationInfo.GetValue("recivingClientIP",typeof(string));
+            slots = (string)serializationInfo.GetValue("slots", typeof(string));
         }
 
-        public NetworkPackage(string message)
-        {
-            this.message = message;
-        }
 
         public NetworkPackage CloneNetworkPackage()
         {
@@ -166,8 +246,11 @@ namespace TSST_EON
             serializationInfo.AddValue("message", message);
             serializationInfo.AddValue("helloMessage", helloMessage);
             serializationInfo.AddValue("managementMessage", managementMessage);
-            serializationInfo.AddValue("labelStack", labelStack);
             serializationInfo.AddValue("capacity", capacity);
+            serializationInfo.AddValue("fromCPCC", fromCPCC);
+            serializationInfo.AddValue("fromNcc", fromNcc);
+            serializationInfo.AddValue("recivingClientIP",recivingClientIP);
+            serializationInfo.AddValue("slots",slots);
         }
     }
 }

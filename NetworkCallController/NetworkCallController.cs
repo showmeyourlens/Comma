@@ -18,18 +18,34 @@ namespace NetworkCallController
         public Socket Server;
         public IPAddress NetworkCallControllerAddress;
         public int NetworkCallControllerPort;
+        public IPAddress NetworkCallControllerAddress2;
+        public int NetworkCallControllerPort2;
+        public IPAddress SubnetworkAddress;
+        public int SubnetworkPort;
         public string NetworkCallControlerId;
-        public List<NetworkElements> NetworkElements = new List<NetworkElements>();
+        public List<NetworkElement> NetworkElements = new List<NetworkElement>();
         static void Main(string[] args)
         {
-            NetworkCallController ncc = new NetworkCallController(args[0], args[1], args[2]);
+            NetworkCallController ncc = new NetworkCallController(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
         }
 
-        NetworkCallController(string NetworkCallControlerId, string NetworkCallControllerAddress, string NetworkCallControllerPort)
+        NetworkCallController(string NetworkCallControlerId, string NetworkCallControllerAddress, string NetworkCallControllerPort, string NetworkCallControllerAddress2, string NetworkCallControllerPort2, string SubnetworkAddress, string SubnetworkPort)
         {
             this.NetworkCallControlerId = NetworkCallControlerId;
             this.NetworkCallControllerAddress = IPAddress.Parse(NetworkCallControllerAddress);
             this.NetworkCallControllerPort = int.Parse(NetworkCallControllerPort);
+            this.NetworkCallControllerAddress2 = IPAddress.Parse(NetworkCallControllerAddress2);
+            this.NetworkCallControllerPort2 = int.Parse(NetworkCallControllerPort2);
+            this.SubnetworkAddress = IPAddress.Parse(SubnetworkAddress);
+            this.SubnetworkPort = int.Parse(SubnetworkPort);
+            if(NetworkCallControlerId=="NetworkCallController1")
+            {
+                ParseHostsInDomain("nodesindomain1.txt");
+            }
+            else if(NetworkCallControlerId=="NetworkCallController2")
+            {
+                ParseHostsInDomain("nodesindomain2.txt");
+            }
             try
             {
                 Task.Run(() => StartNetworkCallController());
@@ -47,7 +63,7 @@ namespace NetworkCallController
             {
                 Server.Bind(new IPEndPoint(NetworkCallControllerAddress, NetworkCallControllerPort));
                 Server.Listen(100);
-                TimeStamp.WriteLine("Network Call Controler Startuje");
+                TimeStamp.WriteLine("Network Call Controler is starting");
                 while (true)
                 {
                     AllDone.Reset();
@@ -57,7 +73,7 @@ namespace NetworkCallController
             }
             catch (Exception e)
             {
-
+                TimeStamp.WriteLine(e.Message);
             }
         }
 
@@ -88,13 +104,32 @@ namespace NetworkCallController
 
                 NetworkPackage received = Deserialize(receiverState, bytesRead);
 
-                if (NetworkCallControlerId == "NetworkCallController1")
+                if(received.fromCPCC==true && received.message.Contains("CallRequest_req"))
                 {
-                    Socket to_ncc = 
-                    //if received.CPCCmessage (jeszcze nie ma takiej wersji pakietu, po stworzeniu trzeba odkomentować)
-                    //Send(received.
-                }
+                    TimeStamp.WriteLine("Recieved Call Request from" + received.sendingClientId + "to" + received.receivingClientId + "with capacity" + received.capacity);
+                    NetworkElement networkelement = NetworkElements.Find(x => x.NetworkElementName == received.receivingClientId);
+                    if (networkelement.NetworkElementSocket == null)
+                    {
+                        networkelement.NetworkElementSocket = handler;
+                    }
+                    if (received.receivingClientId == "H1" || received.receivingClientId == "H3")
+                        {
 
+                            TimeStamp.WriteLine("Trying to connect to subnetwork");
+                            string sendingIP = NetworkElements.Find(x => x.NetworkElementName == received.sendingClientId).NetworkElementAddress.ToString();
+                            string receivingIP = NetworkElements.Find(x => x.NetworkElementName == received.receivingClientId).NetworkElementAddress.ToString();
+                            NetworkPackage toSubnetwork = new NetworkPackage(sendingIP, receivingIP, received.capacity, true);
+                            Socket SubnetworkSocket = new Socket(SubnetworkAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                            SubnetworkSocket.Connect(new IPEndPoint(SubnetworkAddress,SubnetworkPort));
+                            Send(SubnetworkSocket, toSubnetwork);
+                        }
+                        else
+                        {
+                            TimeStamp.WriteLine("Trying to find host in other domain");
+                            Socket NCC2Socket = new Socket(NetworkCallControllerAddress2.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                            NCC2Socket.Connect(new IPEndPoint(NetworkCallControllerAddress2,NetworkCallControllerPort2));
+                        }
+                }
                 handler.BeginReceive(receiverState.Buffer, 0, receiverState.Buffer.Length, 0, new AsyncCallback(ReadCallback), receiverState);
             }
             catch (Exception e)
@@ -144,6 +179,20 @@ namespace NetworkCallController
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        public void ParseHostsInDomain (string FileName)
+        {
+            string line;
+            System.IO.StreamReader file = new System.IO.StreamReader(FileName);
+            while((line = file.ReadLine()) != null)  
+            {  
+                string[] data;
+                data = line.Split(' ');
+                this.NetworkElements.Add(new NetworkElement(data[0], data[1]));
+            }  
+  
+            file.Close();  
         }
 
     }
