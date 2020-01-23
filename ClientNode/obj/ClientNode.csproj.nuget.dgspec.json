@@ -1,24 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ClientNode\\ClientNode.csproj": {}
+    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ClientNode\\ClientNode.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ClientNode\\ClientNode.csproj": {
+    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ClientNode\\ClientNode.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ClientNode\\ClientNode.csproj",
+        "projectUniqueName": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ClientNode\\ClientNode.csproj",
         "projectName": "ClientNode",
-        "projectPath": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ClientNode\\ClientNode.csproj",
-        "packagesPath": "C:\\Users\\Jakub Wilczyński\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ClientNode\\obj\\",
+        "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ClientNode\\ClientNode.csproj",
+        "packagesPath": "C:\\Users\\01133404\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ClientNode\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Jakub Wilczyński\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\01133404\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.0"
@@ -30,8 +32,8 @@
         "frameworks": {
           "netcoreapp3.0": {
             "projectReferences": {
-              "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
-                "projectPath": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj"
+              "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
+                "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj"
               }
             }
           }
@@ -61,7 +63,7 @@
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.0.1, 3.0.1]"
+              "version": "[3.0.2, 3.0.2]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
@@ -77,25 +79,27 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
+    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
         "projectName": "ToolsLibrary",
-        "projectPath": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
-        "packagesPath": "C:\\Users\\Jakub Wilczyński\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jakub Wilczyński\\Desktop\\TSST_EON\\ToolsLibrary\\obj\\",
+        "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
+        "packagesPath": "C:\\Users\\01133404\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Jakub Wilczyński\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\01133404\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net472"
@@ -117,7 +121,7 @@
       },
       "frameworks": {
         "net472": {
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

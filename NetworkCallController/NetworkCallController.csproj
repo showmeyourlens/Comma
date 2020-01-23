@@ -58,7 +58,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Directory.cs" />
     <Compile Include="NetworkCallController.cs" />
-    <Compile Include="NetworkElements.cs" />
+    <Compile Include="NetworkElement.cs" />
     <Compile Include="Policy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
