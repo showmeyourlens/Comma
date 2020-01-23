@@ -14,8 +14,6 @@ namespace CableCloud
         /// ID elementu wysyłającego pakiet
         /// </summary>
         public string sendingClientId;
-
-
         /// <summary>
         /// aktualny adres IP przez jaki przechodzi pakiet
         /// </summary>
@@ -83,7 +81,7 @@ namespace CableCloud
             this.frequency = frequency;
             this.band = band;
             this.helloMessage = false;
-            this.managementMessage = false;
+            //this.managementMessage = false;
             //this.capacity = 0;
             //this.labelStack = new Stack<int>();
             //this.labelStack.Push(startLabel);
@@ -97,12 +95,16 @@ namespace CableCloud
             this.message = "";
             this.receivingClientId = "Cloud";
             this.currentPort = clientPort;
+            this.message = message;
+            this.frequency = frequency;
+            this.band = band;
             this.helloMessage = true;
-            this.managementMessage = false;
+            //this.managementMessage = false;
             //this.capacity = 0;
             //this.labelStack = new Stack<int>();
         }
 
+        /*
         public NetworkPackage(short frequency, short band, string message)
         {
             this.message = "";
@@ -112,7 +114,7 @@ namespace CableCloud
             this.managementMessage = true;
             //this.capacity = 0;
             //this.labelStack = new Stack<int>();
-        }
+        } */
 
      
 
@@ -125,9 +127,8 @@ namespace CableCloud
             receivingClientId = (string)serializationInfo.GetValue("receivingClientId", typeof(string));
             message = (string)serializationInfo.GetValue("message", typeof(string));
             helloMessage = (bool)serializationInfo.GetValue("helloMessage", typeof(bool));
-            managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
-            //labelStack = (Stack<int>)serializationInfo.GetValue("labelStack", typeof(Stack<int>));
-            //capacity = (int)serializationInfo.GetValue("capacity", typeof(int));
+            frequency = (short)serializationInfo.GetValue("frequency", typeof(short));
+            band = (short)serializationInfo.GetValue("band", typeof(short));
         }
 
         public NetworkPackage CloneNetworkPackage()
@@ -142,7 +143,7 @@ namespace CableCloud
             result.frequency = this.frequency;
             result.band = this.band;
             result.helloMessage = false;
-            result.managementMessage = false;
+            //result.managementMessage = false;
             //result.capacity = 0;
 
             return result;
@@ -161,7 +162,9 @@ namespace CableCloud
             serializationInfo.AddValue("receivingClientId", receivingClientId);
             serializationInfo.AddValue("message", message);
             serializationInfo.AddValue("helloMessage", helloMessage);
-            serializationInfo.AddValue("managementMessage", managementMessage);
+            serializationInfo.AddValue("frequency", message);
+            serializationInfo.AddValue("band", message);
+            //serializationInfo.AddValue("managementMessage", managementMessage);
             //serializationInfo.AddValue("labelStack", labelStack);
             //serializationInfo.AddValue("capacity", capacity);
         }

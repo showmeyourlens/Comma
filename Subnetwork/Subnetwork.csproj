@@ -41,7 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectionController.cs" />
-    <Compile Include="LinkResourceManager.cs" />
+    <Compile Include="Edge.cs" />
+    <Compile Include="Graph.cs" />
+    <Compile Include="LRMRow.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="RoutingController.cs" />
     <Compile Include="Subnetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
