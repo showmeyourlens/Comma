@@ -13,6 +13,8 @@ namespace Subnetwork
         List<Node> nodes = new List<Node>();
         public
         List<Edge> edges = new List<Edge>();
+
+        List<Path> pathList = new List<Path>();
         /// <summary>
         /// liczba wezlow
         /// </summary>
@@ -22,10 +24,49 @@ namespace Subnetwork
         /// </summary>
         public int numberEdges;
 
-        public Graph(int e, int n)
+        static void Main(string[] args)
+        {
+            Graph g = new Graph("graf1.txt");
+            List<int> bestPath =  g.Dijkstra2(2, 6, 2);
+        }
+            public Graph(int e, int n)
         {
             numberNodes = n;
             numberEdges = e;
+        }
+
+        public Graph(string fileName)
+        {
+            string[] load = System.IO.File.ReadAllLines(fileName);
+            numberNodes = Int32.Parse(load[0]);
+            int[] numbers = new int[4];
+            numberEdges = Int32.Parse(load[numberNodes + 1]);
+            for (int i = 1; i <= numberNodes; i++)
+            {
+
+                string[] dane = load[i].Split(new string[] { " " }, StringSplitOptions.None);
+                for (int j = 0; j < dane.Length; j++)
+                {
+                    numbers[j] = Int32.Parse(dane[j]);
+                }
+
+                nodes.Add(new Node(numbers[0]));
+            }
+
+            for (int i = numberNodes + 2; i <= numberNodes + numberEdges + 1; i++)
+            {
+                string[] dane = load[i].Split(new string[] { " " }, StringSplitOptions.None);
+                for (int j = 0; j < dane.Length; j++)
+                {
+                    numbers[j] = Int32.Parse(dane[j]);
+                }
+
+                edges.Add(new Edge(numbers[0], nodes[numbers[1] - 1], nodes[numbers[2] - 1], numbers[3]));
+
+                nodes.Find(x => x.id == nodes[numbers[1] - 1].id).neighbors.Add(nodes[numbers[2] - 1]);
+                nodes.Find(x => x.id == nodes[numbers[2] - 1].id).neighbors.Add(nodes[numbers[1] - 1]);
+
+            }
         }
 
         /*
@@ -71,6 +112,43 @@ namespace Subnetwork
             return null;
         }
 
+        public List<int> Dijkstra2(int source, int destination, int necessarySlots)
+        {
+            List<Path> dijkstraResult = new List<Path>();
+            Path startingPath = new Path();
+            startingPath.Nodes.Add(source);
+            RecursiveDijkstra(dijkstraResult, startingPath, source, destination, necessarySlots);
+            
+            // W dijkstraResults są wszystkie ścieżki które nie mają cykli i prowadzą z source do destination
+            // Zajmowanie szczelin do ogarnięcia
+            return dijkstraResult.OrderBy(x => x.Cost).First().Nodes;
+        }
+
+        public void RecursiveDijkstra(List<Path> dijkstraResult, Path pathToSource, int source, int destination, int necessarySlots)
+        {
+            Node startNode = nodes.Find(x => x.id == source);
+            foreach(Node node in startNode.neighbors)
+            {
+                if (pathToSource.Nodes.Contains(node.id))
+                {
+                    // pętla. Ścieżka do wywalenia
+                }
+                else
+                {
+                    Path newPath = new Path(pathToSource);
+                    newPath.AddNode(node.id, GetEdge(startNode.id, node.id).weight);
+                    if (node.id == destination)
+                    {
+                        dijkstraResult.Add(newPath);
+                    }
+                    else
+                    {
+                        RecursiveDijkstra(dijkstraResult, newPath, node.id, destination, necessarySlots);
+                    }
+                }
+            }
+        }
+        
         public List<int> Dijkstra(int source, int destination, int necessarySlots)
         {
             int INF = 99999;
@@ -196,5 +274,29 @@ namespace Subnetwork
 
         
 
+    }
+
+    public class Path
+    {
+        public List<int> Nodes;
+        public int Cost;
+
+        public Path()
+        {
+            Nodes = new List<int>();
+            Cost = 0;
+        }
+
+        public Path(Path currentPath)
+        {
+            Nodes = new List<int>(currentPath.Nodes);
+            Cost = currentPath.Cost;
+        }
+
+        public void AddNode(int nodeId, int cost)
+        {
+            Nodes.Add(nodeId);
+            Cost += cost;
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Subnetwork
         /// <summary>
         /// lista sasiadow wezla
         /// </summary>
-        public List<Node> neighbors;
+        public List<Node> neighbors = new List<Node>();
 
         public Node()
         {
