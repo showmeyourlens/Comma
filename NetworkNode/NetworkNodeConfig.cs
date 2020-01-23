@@ -7,9 +7,9 @@ namespace NetworkNode
 {
     public class NetworkNodeConfig
     {
-        public IPAddress ManagementSystemAddress { get; set; }
+        public IPAddress SubnetworkAddress { get; set; }
 
-        public ushort ManagementSystemPort { get; set; }
+        public ushort SubnetworkPort { get; set; }
 
         public string NodeName { get; set; }
 
@@ -24,12 +24,13 @@ namespace NetworkNode
             var content = File.ReadAllLines(FileName).ToList();
             var config = new NetworkNodeConfig();
 
-            config.ManagementSystemAddress = IPAddress.Parse(GetProperty(content, "MANAGEMENTADDRESS"));
-            config.ManagementSystemPort = ushort.Parse(GetProperty(content, "MANAGEMENTPORT"));
+            
             config.NodeName = GetProperty(content, "NODENAME");
             config.CloudAddress = IPAddress.Parse(GetProperty(content, "CLOUDADDRESS"));
             config.NodeAddress = IPAddress.Parse(GetProperty(content, "NODEADDRESS"));
             config.CloudPort = ushort.Parse(GetProperty(content, "CLOUDPORT"));
+            config.SubnetworkAddress = IPAddress.Parse(GetProperty(content, "SUBNETWORKADDRESS"));
+            config.SubnetworkPort = ushort.Parse(GetProperty(content, "SUBNETWORKPORT"));
             return config;
         }
 
