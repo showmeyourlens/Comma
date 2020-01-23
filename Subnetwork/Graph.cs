@@ -76,7 +76,7 @@ namespace Subnetwork
             int INF = 99999;
             Graph graphDijkstra = new Graph(0, 0);              // graf Dijkstry
             List<int> result = new List<int>();
-            List<Edge> queue = new List<Edge>();                // kolejka
+            //List<Edge> queue = new List<Edge>();                // kolejka
             List<int> road = new List<int>();                   // droga podanach w indeksach wezlow
             List<int> road_in_edges = new List<int>();          // droga podana w indeksach linkow
             List<int> prev = new List<int>();                   // lista poprzednikow
@@ -102,17 +102,13 @@ namespace Subnetwork
             graphDijkstra.nodes.Add(nodes[source]);
             graphDijkstra.numberNodes++;
 
-            //int previous = source;
-
-            int smallest = INF;
-            int present = 0; //id obecnie rozwazanego wezla
-            int count = nodes.Count();  //licznik równy liczbie wezlow w grafie
+            int smallest = INF;     // koszt inifnity do wezlow jeszcze nierozpatrzonych
+            int present = source; //id obecnie rozwazanego wezla
 
             while (graphDijkstra.numberNodes != this.numberNodes)
             {
                 int i;
-
-                // szukamy wezla o najmniejszym koscie wsrod wszystkich jeszcze nie rozpatrzonych
+                // szukamy wezla o najmniejszym koszcie wsrod wszystkich jeszcze nie rozpatrzonych
                 for (i = 0; i < cost.Count(); i++)
                 {
                     if (cost[i] < smallest) { 
@@ -125,7 +121,6 @@ namespace Subnetwork
                     break;
                 }
 
-                count--;
 
                 foreach (var neighbor in GetNode(present).neighbors)  // dla kazdego sasiada naszego rozwazanego wezla
                 {
@@ -133,14 +128,19 @@ namespace Subnetwork
 
                     Edge toNeighbor = this.GetEdge(GetNode(present).GetId(), neighbor.GetId());
                     int alt = cost[GetNode(present).GetId()] + toNeighbor.GetWeight();   
-                    if ( alt < cost[nodes[present].GetId()])
+                    if ( alt < cost[neighbor.GetId()])
                     {
                         if (graphDijkstra.edges.Count() == 0)
                         {
                             if (toNeighbor.FindFreeChannels(necessarySlots) == true)
                             {
                                 toNeighbor.useChannels(Edge.readyChannels);
+                                cost[neighbor.GetId()] = alt; //jesli alternetywny koszt dojscia do sasiada jest mniejszy od rozwazanego to zmieniamy jego koszt w tabeli
+                                prev[neighbor.GetId()] = nodes[present].GetId();
+                                graphDijkstra.nodes.Add(neighbor);
+                                graphDijkstra.edges.Add(this.GetEdge(GetNode(present).GetId(), neighbor.GetId()));
                             }
+                            else { }
                         }
                         else 
                         {
@@ -159,6 +159,7 @@ namespace Subnetwork
                                 break;
                             }
                         }
+
                     }
                 }
                 costs[present] = cost[present];
