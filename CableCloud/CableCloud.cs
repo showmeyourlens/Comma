@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
-using CableCloud;
+using TSST_EON;
 
 namespace CableCloud
 {
@@ -247,8 +247,6 @@ namespace CableCloud
                 targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[0], link.ConnectedPorts[1], link.ConnectedNodes[1]));
                 targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[1], link.ConnectedPorts[0], link.ConnectedNodes[0]));
             }
-            // elementy zarządzające. Nie muszą mieć adresów, no bo bez przesady.
-            //targetNetworkObjects.Add(new TargetNetworkObject("MGMT"));
 
         }
 

@@ -19,11 +19,5 @@ namespace CableCloud
             this.TargetPort = outputPort;
             this.TargetObjectId = objectId;
         }
-
-        /*// only for management node
-        public TargetNetworkObject(string managementNodeName)
-        {
-            this.TargetObjectId = managementNodeName;
-        } */
     }
 }

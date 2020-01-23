@@ -1,24 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {}
+    "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {}
   },
   "projects": {
-    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
+    "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
         "projectName": "ToolsLibrary",
-        "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
-        "packagesPath": "C:\\Users\\01133404\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\obj\\",
+        "projectPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
+        "packagesPath": "C:\\Users\\arkid\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\01133404\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\arkid\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],

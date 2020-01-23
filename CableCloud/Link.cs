@@ -18,12 +18,12 @@ namespace CableCloud
         /// Jedna komórka reprezentuje jeden tunel.
         /// -1 oznacza, że dana szczelina jest wolna. 1 oznacza zajeta częstotliwość.
         /// </summary>
-        public List<short> EONchannels { get; set; }
+        public List<int> EONchannels { get; set; }
         /// Tablica zawierajaca zajete częstotliwości.
         /// </summary>
         public List<string> BusyFreq { get; set; } ///// raczej sie juz nie przyda
         /// <summary>
-        /// Domyślna liczba kanałów dostępnych w routerze. 64 szczeliny o szerokości 12.5 GHz
+        /// Domyślna liczba kanałów dostępnych w laczu. 64 szczeliny o szerokości 12.5 GHz
         /// </summary>
         public int capacity = 64;
 
