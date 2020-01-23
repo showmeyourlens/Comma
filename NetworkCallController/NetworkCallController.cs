@@ -17,6 +17,8 @@ namespace NetworkCallController
     {
         public ManualResetEvent AllDone = new ManualResetEvent(false);
         public Socket Server;
+        public Socket NCC2Socket;
+        Socket SubnetworkSocket;
         public IPAddress NetworkCallControllerAddress;
         public int NetworkCallControllerPort;
         public IPAddress NetworkCallControllerAddress2;
@@ -107,29 +109,43 @@ namespace NetworkCallController
 
                 if(received.fromCPCC==true && received.message.Contains("CallRequest_req"))
                 {
-                    TimeStamp.WriteLine("Recieved Call Request from" + received.sendingClientId + "to" + received.receivingClientId + "with capacity" + received.capacity);
-                    NetworkElement networkelement = NetworkElements.Find(x => x.NetworkElementName == received.receivingClientId);
-                    if (networkelement.NetworkElementSocket == null)
+                    TimeStamp.WriteLine("Recieved Call Request request from" + received.sendingClientId + "to" + received.receivingClientId + "with capacity" + received.capacity);
+                    NetworkElement networkelement;
+                    if (NetworkElements.Exists(x => x.NetworkElementName == received.receivingClientId))
                     {
-                        networkelement.NetworkElementSocket = handler;
+                        networkelement = NetworkElements.Find(x => x.NetworkElementName == received.receivingClientId);
+                        if (networkelement.NetworkElementSocket == null)
+                        {
+                            networkelement.NetworkElementSocket = handler;
+                        }
+                        TimeStamp.WriteLine("Trying to connect to subnetwork");
+                        string sendingIP = NetworkElements.Find(x => x.NetworkElementName == received.sendingClientId).NetworkElementAddress.ToString();
+                        string receivingIP = NetworkElements.Find(x => x.NetworkElementName == received.receivingClientId).NetworkElementAddress.ToString();
+                        NetworkPackage toSubnetwork = new NetworkPackage(sendingIP, receivingIP, received.capacity, true);
+                        SubnetworkSocket = new Socket(SubnetworkAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                        SubnetworkSocket.Connect(new IPEndPoint(SubnetworkAddress, SubnetworkPort));
+                        Send(SubnetworkSocket, toSubnetwork);
                     }
-                    if (received.receivingClientId == "H1" || received.receivingClientId == "H3")
-                        {
-
-                            TimeStamp.WriteLine("Trying to connect to subnetwork");
-                            string sendingIP = NetworkElements.Find(x => x.NetworkElementName == received.sendingClientId).NetworkElementAddress.ToString();
-                            string receivingIP = NetworkElements.Find(x => x.NetworkElementName == received.receivingClientId).NetworkElementAddress.ToString();
-                            NetworkPackage toSubnetwork = new NetworkPackage(sendingIP, receivingIP, received.capacity, true);
-                            Socket SubnetworkSocket = new Socket(SubnetworkAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                            SubnetworkSocket.Connect(new IPEndPoint(SubnetworkAddress,SubnetworkPort));
-                            Send(SubnetworkSocket, toSubnetwork);
-                        }
-                        else
-                        {
-                            TimeStamp.WriteLine("Trying to find host in other domain");
-                            Socket NCC2Socket = new Socket(NetworkCallControllerAddress2.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                            NCC2Socket.Connect(new IPEndPoint(NetworkCallControllerAddress2,NetworkCallControllerPort2));
-                        }
+                    else
+                    {
+                        TimeStamp.WriteLine("Trying to find host in other domain");
+                        NCC2Socket = new Socket(NetworkCallControllerAddress2.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                        NCC2Socket.Connect(new IPEndPoint(NetworkCallControllerAddress2, NetworkCallControllerPort2));
+                    }
+                }
+                else if(received.message.Contains("ConnectionRequest_rsp"))
+                {
+                    TimeStamp.WriteLine("Recieved Connection Request response with parameters:/nIP of sending host" + received.currentIP + "/nIP of reciving host" + received.receivingClientIP + "/nUsed slots" + received.slots);
+                    NetworkPackage toncc2 = new NetworkPackage(received.currentIP, received.receivingClientIP, received.slots, true);
+                    Send(NCC2Socket, toncc2);
+                }
+                else if(received.message.Contains("CallCoordination_req"))
+                {
+                    TimeStamp.WriteLine("Recieved Call Coordination request with parameters:/nIP of sending host" + received.currentIP + "/nIP of reciving host" + received.receivingClientIP + "/nUsed slots" + received.slots);
+                    NetworkPackage toSubnetwork2 = new NetworkPackage(received.currentIP, received.receivingClientIP, received.slots, true);
+                    SubnetworkSocket = new Socket(SubnetworkAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    SubnetworkSocket.Connect(new IPEndPoint(SubnetworkAddress, SubnetworkPort));
+                    Send(SubnetworkSocket, toSubnetwork2);
                 }
                 handler.BeginReceive(receiverState.Buffer, 0, receiverState.Buffer.Length, 0, new AsyncCallback(ReadCallback), receiverState);
             }
