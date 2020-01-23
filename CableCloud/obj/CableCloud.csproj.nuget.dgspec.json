@@ -1,24 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj": {}
+    "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj": {}
   },
   "projects": {
-    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj": {
+    "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
+        "projectUniqueName": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
         "projectName": "CableCloud",
-        "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
-        "packagesPath": "C:\\Users\\01133404\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\CableCloud\\obj\\",
+        "projectPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\CableCloud.csproj",
+        "packagesPath": "C:\\Users\\arkid\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\CableCloud\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\01133404\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\arkid\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -32,8 +32,8 @@
         "frameworks": {
           "netcoreapp3.0": {
             "projectReferences": {
-              "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
-                "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj"
+              "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
+                "projectPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj"
               }
             }
           }
@@ -46,6 +46,14 @@
       },
       "frameworks": {
         "netcoreapp3.0": {
+          "dependencies": {
+            "Microsoft.CodeAnalysis.FxCopAnalyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.9.8, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -83,21 +91,21 @@
         }
       }
     },
-    "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
+    "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
         "projectName": "ToolsLibrary",
-        "projectPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
-        "packagesPath": "C:\\Users\\01133404\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\01133404\\source\\repos\\Wilku97\\TSST_EON\\ToolsLibrary\\obj\\",
+        "projectPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\ToolsLibrary.csproj",
+        "packagesPath": "C:\\Users\\arkid\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\arkid\\Source\\Repos\\Wilku97\\TSST_EON\\ToolsLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\01133404\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\arkid\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
