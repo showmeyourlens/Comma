@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TSST_EON
+namespace ToolsLibrary
 {
     /// <summary>
     /// Pakiecik
@@ -79,7 +79,7 @@ namespace TSST_EON
         }
 
 
-        private NetworkPackage(string message)
+        public NetworkPackage(string message)
         {
             this.message = message;
         }

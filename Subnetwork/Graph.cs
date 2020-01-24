@@ -24,11 +24,6 @@ namespace Subnetwork
         /// </summary>
         public int numberEdges;
 
-        static void Main(string[] args)
-        {
-            Graph g = new Graph("graf1.txt");
-            List<int> bestPath =  g.Dijkstra2(2, 6, 2);
-        }
             public Graph(int e, int n)
         {
             numberNodes = n;

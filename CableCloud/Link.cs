@@ -38,6 +38,7 @@ namespace CableCloud
             this.ConnectedPorts[1] = secondNodePort;
             this.length = length;
 
+            this.EONchannels = new List<int>();
             for (int i = 0; i < capacity; i++)
             {
                 // 1 -> szczelina zajeta  / -1 -> szczelin wolna

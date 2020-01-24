@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FIBXMLReader.cs" />
+    <Compile Remove="RoutingInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ToolsLibrary\ToolsLibrary.csproj" />
   </ItemGroup>
 

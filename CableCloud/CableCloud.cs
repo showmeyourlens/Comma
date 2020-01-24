@@ -9,7 +9,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
-using TSST_EON;
 
 namespace CableCloud
 {
@@ -102,7 +101,6 @@ namespace CableCloud
 
 
                 NetworkPackage received = Deserialize(receiverState, bytesRead);
-
                 ProcessPackageAndResponse(handler, received);
 
                 handler.BeginReceive(receiverState.Buffer, 0, receiverState.Buffer.Length, 0, new AsyncCallback(ReadCallback), receiverState);

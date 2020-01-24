@@ -13,11 +13,11 @@ namespace CableCloud
             Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Clear();
-            NodeCloudCommunication cloudCommunicator = new NodeCloudCommunication(args[0], args[1], args[2], args[3]);
+            NodeCloudCommunication cloudCommunicator = new NodeCloudCommunication(args[0], args[1], args[2]);
 
             Console.WriteLine("Starting network node with following parameters:");
             Console.WriteLine("Address on device: {0}:{1}", cloudCommunicator.instanceAddress, cloudCommunicator.instancePort);
-            Console.WriteLine("Address in emulated network: {0}:{1}", cloudCommunicator.emulationNodeAddress, cloudCommunicator.emulationNodePort);
+            Console.WriteLine("Address in emulated network: {0}", cloudCommunicator.emulationNodeAddress);
             Console.WriteLine("Node identificator: {0}", cloudCommunicator.emulationNodeId);
             Console.WriteLine();
             Console.WriteLine("Press 's' to turn off/on router, 'c' to close");

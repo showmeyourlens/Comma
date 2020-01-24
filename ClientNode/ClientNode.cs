@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CableCloud;
+using ToolsLibrary;
 
 namespace ClientNode
 {
@@ -46,9 +47,6 @@ namespace ClientNode
                 bool isFinish = true;
                 while (isFinish)
                 {
-                    Console.WriteLine("Message: \n");
-                    clientNode.MyMessage = Console.ReadLine();
-
                     Console.WriteLine("\n\nDemanded capacity (in Gb/s): \n");
                     string capacity_string = Console.ReadLine();
                     clientNode.demandedCapacity = Convert.ToInt32(capacity_string);
@@ -60,9 +58,12 @@ namespace ClientNode
                     {
                         cloudCommunicator.Send(new NetworkPackage(
                         cloudCommunicator.emulationNodeId,
-                        cloudCommunicator.emulationNodeAddress,
+                        cloudCommunicator.emulationNodeAddress, 
                         cloudCommunicator.emulationNodePort,
                         contact.receiverId,
+                        1,
+                        1,
+                        
                         "Very important message") //+contact.label
                         );
                         Console.WriteLine("/nMessage sent!");
@@ -115,12 +116,14 @@ namespace ClientNode
         public char key;
         public string receiverId;
         public int label;
+        public bool isConnection;
 
         public ClientSenderConfig(string receiverId, int label)
         {
             this.key = (char)receiverId[1];
             this.receiverId = receiverId;
             this.label = label;
+            this.isConnection = false;
         }
 
     }

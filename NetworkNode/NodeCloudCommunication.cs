@@ -12,8 +12,6 @@ namespace CableCloud
 {
     public class NodeCloudCommunication
     {
-        public FIBXMLReader Reader;
-        public RoutingInfo routingInfo;
         public readonly IPAddress instanceAddress;
         private Socket cloudSocket;
         private Socket clientSocket;
@@ -22,20 +20,16 @@ namespace CableCloud
         public readonly int instancePort;
         public readonly string emulationNodeId;
         public readonly string emulationNodeAddress;
-        public readonly int emulationNodePort;
-        public bool isRouterUp; 
+        public bool isRouterUp;
 
-        
-        public NodeCloudCommunication(string instancePort, string nodeId, string nodeEmulationAddress, string nodeEmulationPort)
+
+        public NodeCloudCommunication(string instancePort, string nodeId, string nodeEmulationAddress)
         {
             this.instanceAddress = IPAddress.Parse("127.0.0.1");
             this.cloudPort = 62572;
             this.instancePort = Int32.Parse(instancePort);
             this.emulationNodeId = nodeId;
             this.emulationNodeAddress = nodeEmulationAddress;
-            this.emulationNodePort = Int32.Parse(nodeEmulationPort);
-            this.Reader = new FIBXMLReader();
-            //this.routingInfo;
             this.sendDone = new ManualResetEvent(false);
             this.isRouterUp = true;
         }
@@ -139,66 +133,55 @@ namespace CableCloud
         private void ReceiveCallback(IAsyncResult ar)
         {
             ReceiverState receiverState = (ReceiverState)ar.AsyncState;
-                try
+            try
+            {
+                if (isRouterUp)
                 {
-                    if (isRouterUp)
+                    int bytesRead = receiverState.WorkSocket.EndReceive(ar);
+                    NetworkPackage networkPackage = DeserializeMessage(receiverState, bytesRead);
+                    if (networkPackage.helloMessage)
                     {
-                        int bytesRead = receiverState.WorkSocket.EndReceive(ar);
-                        NetworkPackage networkPackage = DeserializeMessage(receiverState, bytesRead);
-                        if (networkPackage.helloMessage)
-                        {
-                            TimeStamp.WriteLine("Connected to cloud");
-                        }
-                        if (networkPackage.managementMessage)
-                        {
-                            ProcessReceivedManagementMessage(networkPackage);
-                        }
-                        if (!networkPackage.managementMessage && !networkPackage.helloMessage)
-                        {
-                            ProcessReceivedClientMessage(networkPackage);
-                        }
+                        TimeStamp.WriteLine("Connected to cloud");
                     }
-                    else
+                    if (networkPackage.managementMessage)
                     {
-                        Console.WriteLine("Router is down. Message discarded");
+                        ProcessReceivedManagementMessage(networkPackage);
                     }
-                    receiverState.WorkSocket.BeginReceive(receiverState.Buffer, 0, receiverState.Buffer.Length, 0, new AsyncCallback(ReceiveCallback), receiverState);
+                    if (networkPackage.fromNcc)
+                    {
+                        ProcessNccMessage(networkPackage);
+                    }
+                    if (!networkPackage.managementMessage && !networkPackage.helloMessage)
+                    {
+                        ProcessReceivedClientMessage(networkPackage);
+                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    TimeStamp.WriteLine(e.Message);
+                    Console.WriteLine("Router is down. Message discarded");
                 }
-          
+                receiverState.WorkSocket.BeginReceive(receiverState.Buffer, 0, receiverState.Buffer.Length, 0, new AsyncCallback(ReceiveCallback), receiverState);
+            }
+            catch (Exception e)
+            {
+                TimeStamp.WriteLine(e.Message);
+            }
+
+        }
+
+        private void ProcessNccMessage(NetworkPackage networkPackage)
+        {
+            throw new NotImplementedException();
         }
 
         private NetworkPackage CreateHelloMessage()
         {
-            return new NetworkPackage(emulationNodeId, emulationNodeAddress, emulationNodePort);
+            return new NetworkPackage(emulationNodeId, emulationNodeAddress, 0);
         }
 
         private void ProcessReceivedClientMessage(NetworkPackage networkPackage)
         {
-            // TimeStamp.WriteLine("Received message from {0} to {1}.", networkPackage.sendingClientId, networkPackage.receivingClientId);
-            TimeStamp.WriteLine("Received message.");
-
-            // RISKY - if message from client, add label "0" (e.g. assume there is one)
-            if (networkPackage.labelStack.Count == 0)
-            {
-                networkPackage.labelStack.Push(0);
-            }
-
-            int topLabel = networkPackage.labelStack.Peek();
-            
-            RouterLabel routerLabel = routingInfo.routerLabels.Find(x => x.inputPort == networkPackage.currentPort && x.label == topLabel);
-            RouterAction action = routerLabel != null ? routingInfo.routerActions.Find(x => x.actionId == routerLabel.action) : null;
-            
-            
-            if (DoSelectedAction(action, networkPackage))
-            {
-                Console.WriteLine("{0} Passing packet on port {1}.", TimeStamp.TAB, networkPackage.currentPort);
-                Send(networkPackage);
-            }
-            
+            TimeStamp.WriteLine("Client Message");
         }
 
         private void ProcessReceivedManagementMessage(NetworkPackage networkPackage)
@@ -206,13 +189,13 @@ namespace CableCloud
             if (networkPackage.message.Equals("ROUTING_SCHEME_2"))
             {
                 TimeStamp.WriteLine("MANAGEMENT MESSAGE: upload new forwarding table");
-                routingInfo = Reader.ReadFIB("ManagementSystem2.xml", emulationNodeId);
                 Console.WriteLine("{0} upload done. ", TimeStamp.TAB);
             }
         }
-
+        /*
         private bool DoSelectedAction(RouterAction action, NetworkPackage networkPackage)
         {
+            
             if (action == null)
             {
                 TimeStamp.WriteLine("ERROR - no action defined (port {0}, label {1}). Discarded");
@@ -254,9 +237,11 @@ namespace CableCloud
                 networkPackage.currentPort = action.outPort;
                 networkPackage.currentIP = emulationNodeAddress;
             }
+           
             return true;
-
+            
         }
+        */
     }
 }
 
