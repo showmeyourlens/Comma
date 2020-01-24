@@ -8,9 +8,7 @@ namespace NetworkNode
     // klasa pewnie do ogarniecia gdy zrobimy Routing Controller
     public class RoutingInfo
     {
-        public List<RouterLabel> routerLabels;
-        public List<RouterDeletedLabel> routerDeletedLabels;
-        public List<RouterAction> routerActions;
+        
 
 
         public RoutingInfo()
@@ -37,40 +35,4 @@ namespace NetworkNode
         }
     }
 
-    public class RouterDeletedLabel
-    {
-        public int labelStack;
-        public int labelsStackId;
-
-        public RouterDeletedLabel(int labelStack, int labelsStackId)
-        {
-            this.labelStack = labelStack;
-            this.labelsStackId = labelsStackId;
-        }
-    }
-
-    public class RouterAction
-    {
-        public int actionId;
-        public string actionString;
-        public int outLabel;
-        public int outPort;
-        public int nextActionId;
-
-        public RouterAction(int actionId, string action, string outLabel, string outPort, string nextActionId)
-        {
-            this.actionId = actionId;
-            this.actionString = action;
-            this.outLabel = outLabel.Equals("-") ? 0 : Int32.Parse(outLabel); ;
-            this.outPort = outPort.Equals("-") ? 0 : Int32.Parse(outPort); ;
-            this.nextActionId = nextActionId.Equals("-") ? 0 : Int32.Parse(nextActionId);
-        }
-    }
-
-    enum Actions
-    {
-        SWAP,
-        PUSH,
-        POP
-    }
 }
