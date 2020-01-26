@@ -206,7 +206,7 @@ namespace Subnetwork
                     domainCC.PathSet(networkPackage);
                     break;
                 default:
-                    TimeStamp.WriteLine(emulationNodeId + " Undecognised message type");
+                    TimeStamp.WriteLine(emulationNodeId + " Unrecognised message type");
                     break;
             }
         }
