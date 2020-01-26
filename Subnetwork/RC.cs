@@ -38,6 +38,7 @@ namespace Subnetwork
 
             messagesToSend.Clear();
             connectionMessage = networkPackage.message;
+            Console.WriteLine(TimeStamp.TAB + " " + networkPackage.message);
             // Teraz Dijkstra magic z użyciem dostępnych routerów i kontaktów jako start / end point
             // albo lepiej - ify xD
 
