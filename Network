@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<root>
+	<Domain id="A">
+		<Subnetwork id="1">
+			
+		</Subnetwork>
+		<Subnetwork id="2">
+		</Subnetwork>
+	</Domain>
+	<Domain id="B">
+		<Subnetwork id="3">
+		</Subnetwork>
+	</Domain>
+</root>

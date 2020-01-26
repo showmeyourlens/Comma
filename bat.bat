@@ -1,6 +1,6 @@
 start .\CableCloud\bin\Debug\netcoreapp3.0\CableCloud.exe
 ping 192.0.2.1 -n 1 -w 100 >nul
-start .\ClientNode\bin\Debug\netcoreapp3.0\ClientNode.exe "62331" "C1" "121.32.232.31" "101"
+start .\ClientNode\bin\Debug\netcoreapp3.0\ClientNode.exe "62331" "C1" "121.32.232.31" "101" "1"
 ping 192.0.2.1 -n 1 -w 100 >nul
 start .\ClientNode\bin\Debug\netcoreapp3.0\ClientNode.exe "62332" "C2" "171.18.151.27" "203"
 ping 192.0.2.1 -n 1 -w 100 >nul

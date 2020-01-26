@@ -1,17 +1,17 @@
-﻿using NetworkNode;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
 
-namespace CableCloud
+namespace Subnetwork
 {
-    public class NodeCloudCommunication
+    public class Domain
     {
         public readonly IPAddress instanceAddress;
         private Socket cloudSocket;
@@ -20,20 +20,35 @@ namespace CableCloud
         private readonly int cloudPort;
         public readonly int instancePort;
         public readonly string emulationNodeId;
-        public readonly string emulationNodeAddress;
-        public bool isRouterUp;
-        private List<FIBEntry> forwardingTable;
+        public NCC ncc;
+        public RC rc;
+        public CC cc;
+        public PC pc;
 
-        public NodeCloudCommunication(string instancePort, string nodeId, string nodeEmulationAddress)
+
+        static void Main(string[] args)
+        {
+            Domain domain = new Domain(args[0], args[1]);
+            domain.Start();
+            char key = 'k';
+            while (key != 'c')
+            {
+                Console.ReadKey();
+            }
+            domain.Stop();
+        }
+
+        public Domain(string nodeId, string instancePort)
         {
             this.instanceAddress = IPAddress.Parse("127.0.0.1");
-            this.cloudPort = 62572;
             this.instancePort = Int32.Parse(instancePort);
+            this.cloudPort = 62572;
             this.emulationNodeId = nodeId;
-            this.emulationNodeAddress = nodeEmulationAddress;
             this.sendDone = new ManualResetEvent(false);
-            this.isRouterUp = true;
-            forwardingTable = new List<FIBEntry>();
+            this.ncc = new NCC(this);
+            this.cc = new CC(this);
+            this.rc = new RC(this);
+
         }
         public void Start()
         {
@@ -65,7 +80,6 @@ namespace CableCloud
                 state.WorkSocket = (Socket)ar.AsyncState;
                 cloudSocket = state.WorkSocket;
                 cloudSocket.EndConnect(ar);
-                // Sending HELLO message to cloud
                 Send(CreateHelloMessage());
 
                 Task.Run(() => Receive(cloudSocket));
@@ -137,92 +151,49 @@ namespace CableCloud
             ReceiverState receiverState = (ReceiverState)ar.AsyncState;
             try
             {
-                if (isRouterUp)
+                int bytesRead = receiverState.WorkSocket.EndReceive(ar);
+                NetworkPackage networkPackage = DeserializeMessage(receiverState, bytesRead);
+                if (networkPackage.helloMessage)
                 {
-                    int bytesRead = receiverState.WorkSocket.EndReceive(ar);
-                    NetworkPackage networkPackage = DeserializeMessage(receiverState, bytesRead);
-                    if (networkPackage.helloMessage)
-                    {
-                        TimeStamp.WriteLine("Connected to cloud");
-                    }
-                    if (networkPackage.managementMessage)
-                    {
-                        ProcessReceivedManagementMessage(networkPackage);
-                    }
-                    if (!networkPackage.managementMessage && !networkPackage.helloMessage)
-                    {
-                        ProcessReceivedClientMessage(networkPackage);
-                    }
+                    TimeStamp.WriteLine("Connected to cloud");
                 }
-                else
+                if (networkPackage.managementMessage)
                 {
-                    Console.WriteLine("Router is down. Message discarded");
+                    ProcessReceivedManagementMessage(networkPackage);
                 }
                 receiverState.WorkSocket.BeginReceive(receiverState.Buffer, 0, receiverState.Buffer.Length, 0, new AsyncCallback(ReceiveCallback), receiverState);
             }
             catch (Exception e)
             {
-                TimeStamp.WriteLine(e.Message);
+                TimeStamp.WriteLine("Connection lost");
             }
-
         }
 
         private NetworkPackage CreateHelloMessage()
         {
-            return new NetworkPackage(emulationNodeId, emulationNodeAddress, 0);
+            return new NetworkPackage(emulationNodeId);
         }
-
         private void ProcessReceivedClientMessage(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine("Client Message on port" + networkPackage.currentPort);
-
-            FIBEntry searchedEntry = forwardingTable.Find(x => x.inputPort == networkPackage.currentPort);
-
-            if (searchedEntry != null)
-            {
-                networkPackage.currentPort = searchedEntry.outputPort;
-                Console.WriteLine(TimeStamp.TAB +" Passing to " + networkPackage.currentPort);
-                Send(networkPackage);
-            }
-            else
-            {
-                Console.WriteLine("no forwarding entry");
-            }
+            TimeStamp.WriteLine("Received message from {0}. Message: {1}", networkPackage.sendingClientId, networkPackage.message);
         }
-
         private void ProcessReceivedManagementMessage(NetworkPackage networkPackage)
         {
-            if (networkPackage.MMsgType == Command.Set_OXC)
+            switch (networkPackage.MMsgType)
             {
-                TimeStamp.WriteLine("{0} >> Received SET OXC from {1}", emulationNodeId, networkPackage.sendingClientId);
-                string[] split = networkPackage.message.Split(' ');
-                CreateEntry(split[0], split[1], split[2]);
-                Send(new NetworkPackage(emulationNodeId, networkPackage.sendingClientId, Command.OXC_Set));
-                TimeStamp.WriteLine("{0} >> Sent OXC SET to {1}", emulationNodeId, networkPackage.sendingClientId);
-            }
-        }
-
-        public void CreateEntry(string port1, string port2, string frequency)
-        {
-            Console.WriteLine(String.Format("{0} Created entry: from port {1} pass to {2} when frequency is {3}", TimeStamp.TAB, port1, port2, frequency));
-            forwardingTable.Add(new FIBEntry(Int32.Parse(port1), Int32.Parse(port2), Int32.Parse(frequency)));
-            Console.WriteLine(String.Format("{0} Created entry: from port {1} pass to {2} when frequency is {3}", TimeStamp.TAB, port2, port1, frequency));
-            forwardingTable.Add(new FIBEntry(Int32.Parse(port2), Int32.Parse(port1), Int32.Parse(frequency)));
-        }
-        
-        public class FIBEntry
-        {
-            public int inputPort;
-            public int outputPort;
-            public int frequency;
-
-            public FIBEntry(int inputPort, int outputPort, int frequency)
-            {
-                this.inputPort = inputPort;
-                this.outputPort = outputPort;
-                this.frequency = frequency;
+                case Command.Call_Request:
+                    ncc.CallRequest(networkPackage);
+                    break;
+                case Command.Call_Indication_Confirmed:
+                    ncc.CallIndication(networkPackage);
+                    break;
+                case Command.OXC_Set:
+                    rc.OXCSet(networkPackage);
+                    break;
+                case Command.Path_Set:
+                    cc.PathSet(networkPackage);
+                    break;
             }
         }
     }
 }
-

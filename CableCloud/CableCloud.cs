@@ -166,26 +166,22 @@ namespace CableCloud
             }
             if (received.managementMessage)
             {
-                if (received.receivingClientId == "ROUTERS")
+                int subnetwork;
+                if (received.receivingClientId.Contains("_"))
                 {
-                    try
+                    if (Int32.TryParse(received.receivingClientId.Split('_')[1], out subnetwork))
                     {
-                        List<TargetNetworkObject> targets = targetNetworkObjects.FindAll(x => x.TargetObjectId[0] == 'N').GroupBy(x => x.TargetObjectId).Select(group => group.First()).ToList();
-                        for (int i = 0; i < targets.Count; i++)
-                        {
-                            if (targets[i].TargetSocket != null)
-                            {
-                                AllDone.Reset();
-                                Send(targets[i].TargetSocket, received);
-                                AllDone.WaitOne();
-                            }
-                        }
+                        received.receivingClientId = subnetwork.ToString();
                     }
-                    catch (Exception e)
+                    if (received.receivingClientId.Contains("CPCC"))
                     {
-                        Console.WriteLine(e.Message);
+                        received.receivingClientId = received.receivingClientId.Split('_')[0];
                     }
                 }
+
+                Send(targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId).TargetSocket, received);
+
+
                 return;
             }
             if (!received.helloMessage && !received.managementMessage)
@@ -246,6 +242,10 @@ namespace CableCloud
                 targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[1], link.ConnectedPorts[0], link.ConnectedNodes[0]));
             }
 
+            targetNetworkObjects.Add(new TargetNetworkObject("1"));
+            targetNetworkObjects.Add(new TargetNetworkObject("C1_CPCC"));
+            targetNetworkObjects.Add(new TargetNetworkObject("C2_CPCC"));
+            targetNetworkObjects.Add(new TargetNetworkObject("C3_CPCC"));
         }
 
     }

@@ -19,5 +19,10 @@ namespace CableCloud
             this.TargetPort = outputPort;
             this.TargetObjectId = objectId;
         }
+
+        public TargetNetworkObject(string objectId)
+        {
+            this.TargetObjectId = objectId;
+        }
     }
 }

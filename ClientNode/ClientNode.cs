@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CableCloud;
 using ToolsLibrary;
 
-namespace ClientNode
+namespace ClientNodeNS
 {
-    class ClientNode
+    public class ClientNode
     {
         public List<ClientSenderConfig> contactList;
-        /// <summary>
-        /// wiadomosc klienta
-        /// </summary>
-        public string MyMessage;
-        /// <summary>
-        /// wymagana przeplywnosc
-        /// </summary>
-        public int demandedCapacity;
+        public CloudCommunication cloudCommunicator;
+        public CPCC cpcc;
+        public int subnetworkId;
+
 
         static void Main(string[] args)
         {
@@ -24,7 +19,7 @@ namespace ClientNode
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Clear();
             ClientNode clientNode = new ClientNode();
-            if (args.Length != 4)
+            if (args.Length != 5)
             {
                 Console.WriteLine("Wrong parameters quantity. Shutting down.");
                 return;
@@ -32,41 +27,57 @@ namespace ClientNode
 
             clientNode.contactList = clientNode.CreateDumbClientConfig(args[1]);
 
-            CloudCommunication cloudCommunicator = new CloudCommunication(args[0], args[1], args[2], args[3]);
-            
+            clientNode.cloudCommunicator = new CloudCommunication(clientNode, args[0], args[1], args[2], args[3]);
+            clientNode.cpcc = new CPCC(clientNode);
+            clientNode.subnetworkId = Int32.Parse(args[4]);
+
             Console.WriteLine("Starting client node with following parameters:");
-            Console.WriteLine("Address on device: {0}:{1}", cloudCommunicator.instanceAddress, cloudCommunicator.instancePort);
-            Console.WriteLine("Address in emulated network: {0}:{1}", cloudCommunicator.emulationNodeAddress, cloudCommunicator.emulationNodePort);
-            Console.WriteLine("Node identificator: {0}", cloudCommunicator.emulationNodeId);
-            
+            Console.WriteLine("Address on device: {0}:{1}", clientNode.cloudCommunicator.instanceAddress, clientNode.cloudCommunicator.instancePort);
+            Console.WriteLine("Address in emulated network: {0}:{1}", clientNode.cloudCommunicator.emulationNodeAddress, clientNode.cloudCommunicator.emulationNodePort);
+            Console.WriteLine("Node identificator: {0}", clientNode.cloudCommunicator.emulationNodeId);
+
             try
             {
                 Console.WriteLine("Client is up!");
-                cloudCommunicator.Start();
-                Console.WriteLine("Type number of client for sending message, c to close");
+                clientNode.cloudCommunicator.Start();
+                Console.WriteLine("Type number of client for sending message, \"k\" and nunber to establish connection, \"c\" to close");
                 bool isFinish = true;
                 while (isFinish)
                 {
-                    Console.WriteLine("\n\nDemanded capacity (in Gb/s): \n");
-                    string capacity_string = Console.ReadLine();
-                    clientNode.demandedCapacity = Convert.ToInt32(capacity_string);
-
-                    Console.WriteLine("\n\nChoose ID destination receiver of message: ");
                     char key = Console.ReadKey().KeyChar;
+                    char connectionClientNumber = 'z';
+                    if (key == 'k')
+                    {
+                        connectionClientNumber = Console.ReadKey().KeyChar;
+                        key = connectionClientNumber;
+                    }
                     ClientSenderConfig contact = clientNode.contactList.Find(x => x.key == key);
+
+                    contact.demandedCapacity = Convert.ToInt32(2);
+
                     if (contact != null)
                     {
-                        cloudCommunicator.Send(new NetworkPackage(
-                        cloudCommunicator.emulationNodeId,
-                        cloudCommunicator.emulationNodeAddress, 
-                        cloudCommunicator.emulationNodePort,
-                        contact.receiverId,
-                        1,
-                        1,
-                        
-                        "Very important message") //+contact.label
-                        );
-                        Console.WriteLine("/nMessage sent!");
+                        if (connectionClientNumber == 'z')
+                        {
+                            clientNode.cloudCommunicator.Send(new NetworkPackage(
+                            clientNode.cloudCommunicator.emulationNodeId,
+                            clientNode.cloudCommunicator.emulationNodeAddress,
+                            clientNode.cloudCommunicator.emulationNodePort,
+                            contact.receiverId,
+                            0.0,
+                            "Very important message"));
+                            Console.WriteLine("/nMessage sent!");
+                        }
+                        else //string sendingClientId, string receivingClientId, int sendingClientPort, int capacity
+                        {
+                            if (!contact.isConnection)
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("Type bandwidth (in GHz/s)");
+                                string ghz = Console.ReadLine();
+                                clientNode.cpcc.CallRequest(contact.receiverId, ghz);
+                            }
+                        }
                     }
 
                 }
@@ -76,7 +87,7 @@ namespace ClientNode
             {
 
             }
-            cloudCommunicator.Stop();
+            clientNode.cloudCommunicator.Stop();
             Console.WriteLine("Closing");
             Console.ReadKey();
         }
@@ -84,46 +95,47 @@ namespace ClientNode
         private List<ClientSenderConfig> CreateDumbClientConfig(string thisNodeId)
         {
             List<ClientSenderConfig> result = new List<ClientSenderConfig>();
-            switch(thisNodeId)
+            switch (thisNodeId)
             {
                 case "C1":
-                    result.Add(new ClientSenderConfig("C2", 17));
-                    result.Add(new ClientSenderConfig("C3", 18));
-                    result.Add(new ClientSenderConfig("C4", 19));
+                    result.Add(new ClientSenderConfig("C2"));
+                    result.Add(new ClientSenderConfig("C3"));
+                    result.Add(new ClientSenderConfig("C4"));
                     break;
                 case "C2":
-                    result.Add(new ClientSenderConfig("C1", 21));
-                    result.Add(new ClientSenderConfig("C3", 23));
-                    result.Add(new ClientSenderConfig("C4", 24));
+                    result.Add(new ClientSenderConfig("C1"));
+                    result.Add(new ClientSenderConfig("C3"));
+                    result.Add(new ClientSenderConfig("C4"));
                     break;
                 case "C3":
-                    result.Add(new ClientSenderConfig("C1", 38));
-                    result.Add(new ClientSenderConfig("C2", 39));
-                    result.Add(new ClientSenderConfig("C4", 40));
+                    result.Add(new ClientSenderConfig("C1"));
+                    result.Add(new ClientSenderConfig("C2"));
+                    result.Add(new ClientSenderConfig("C4"));
                     break;
                 case "C4":
-                    result.Add(new ClientSenderConfig("C1", 41));
-                    result.Add(new ClientSenderConfig("C2", 42));
-                    result.Add(new ClientSenderConfig("C3", 43));
+                    result.Add(new ClientSenderConfig("C1"));
+                    result.Add(new ClientSenderConfig("C2"));
+                    result.Add(new ClientSenderConfig("C3"));
                     break;
             }
             return result;
         }
     }
 
-    class ClientSenderConfig
+    public class ClientSenderConfig
     {
         public char key;
         public string receiverId;
-        public int label;
         public bool isConnection;
+        public int frequency;
+        public int demandedCapacity;
 
-        public ClientSenderConfig(string receiverId, int label)
+        public ClientSenderConfig(string receiverId)
         {
             this.key = (char)receiverId[1];
             this.receiverId = receiverId;
-            this.label = label;
             this.isConnection = false;
+            this.demandedCapacity = 0;
         }
 
     }

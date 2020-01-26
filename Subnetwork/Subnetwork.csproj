@@ -40,16 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionController.cs" />
+    <Compile Include="CC.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="LRMRow.cs" />
+    <Compile Include="NCC.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="RoutingController.cs" />
-    <Compile Include="Subnetwork.cs" />
+    <Compile Include="PC.cs" />
+    <Compile Include="RC.cs" />
+    <Compile Include="Domain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SubnetworkPoint.cs" />
-    <Compile Include="SubnetworkPointPool.cs" />
+    <Compile Include="Subnetwork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

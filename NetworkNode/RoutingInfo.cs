@@ -8,9 +8,6 @@ namespace NetworkNode
     // klasa pewnie do ogarniecia gdy zrobimy Routing Controller
     public class RoutingInfo
     {
-        
-
-
         public RoutingInfo()
         {
             routerLabels = new List<RouterLabel>();

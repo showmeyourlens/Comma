@@ -14,8 +14,8 @@ namespace CableCloud
             XmlDocument XmlDoc = new XmlDocument();
             try
             {
-                XmlDoc.Load("CloudConnection.xml");
-                Console.WriteLine("CloudConnection.xml załadowany!");
+                XmlDoc.Load("Links.xml");
+                Console.WriteLine("Links.xml załadowany!");
                 int count = XmlDoc.GetElementsByTagName("Link").Count;
                 for (int i = 0; i < count; i++)
                 {

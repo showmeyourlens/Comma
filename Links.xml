@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<root>
+	<Link firstObjectId="OXC1" firstObjectPort="63" secondObjectId="C1" secondObjectPort="10" length="100" isClientLink="false" domain="A">1</Link>
+	<Link firstObjectId="OXC1" firstObjectPort="64" secondObjectId="OXC5" secondObjectPort="33" length="100" isClientLink="false">2</Link>
+	<Link firstObjectId="OXC1" firstObjectPort="65" secondObjectId="OXC2" secondObjectPort="111" length="100" isClientLink="false">3</Link>
+	<Link firstObjectId="OXC2" firstObjectPort="112" secondObjectId="OXC3" secondObjectPort="89" length="100" isClientLink="false">4</Link>
+	<Link firstObjectId="OXC2" firstObjectPort="113" secondObjectId="OXC4" secondObjectPort="157" length="100" isClientLink="false">5</Link>
+	<Link firstObjectId="OXC3" firstObjectPort="90" secondObjectId="OXC5" secondObjectPort="72" length="100" isClientLink="false">6</Link>
+	<Link firstObjectId="OXC3" firstObjectPort="91" secondObjectId="OXC4" secondObjectPort="158" length="100" isClientLink="false">7</Link>
+	<Link firstObjectId="OXC4" firstObjectPort="159" secondObjectId="C2" secondObjectPort="12" length="100" isClientLink="false">8</Link>
+	<Link firstObjectId="OXC5" firstObjectPort="34" secondObjectId="OXC6" secondObjectPort="71" length="100" isClientLink="false">9</Link>
+	<Link firstObjectId="OXC6" firstObjectPort="73" secondObjectId="C3" secondObjectPort="15" length="100" isClientLink="false">10</Link>
+</root>

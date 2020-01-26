@@ -36,14 +36,7 @@ namespace ToolsLibrary
         /// zawartość wiadomosci
         /// </summary>
         public string message;
-        /// <summary>
-        ///czestotliwosc
-        /// </summary>
-        public short frequency { get; set; }
-        /// <summary>
-        /// pasmo zajete do przeslania pakietu
-        /// </summary>
-        public short band { get; set; }
+
         /// <summary>
         /// czy wiadomosc typu hello?
         /// </summary>
@@ -52,40 +45,18 @@ namespace ToolsLibrary
         /// czy wiadomosc z systemu zarzadzajacego? //jeszcze zostawiam, ale przerobi sie w NodeCloudCommunication
         /// </summary>
         public bool managementMessage;
-        /// <summary>
-        /// modulacja {64QAM, 32QAM..., BPSK}
-        /// </summary>
-        public string modulation;
-        /// <summary>
-        /// slownik okreslajacy ile razy spadnie pasmo zaleznie od modulacji
-        /// </summary>
-        public Dictionary<string, int> modu = new Dictionary<string, int>()
-        {
-            {"64QAM", 6 },  {"32QAM", 5}, {"16QAM", 4 }, {"8QAM", 3 }, {"4QAM", 2}, {"BPSK", 1 }
-        };
-        public int capacity;
 
-        public bool fromCPCC;
+        public double lambda;
 
-        public bool fromNcc;
-
-        public string slots;
-
-        public bool toSubnetwork;
+        public Command MMsgType;
 
         private NetworkPackage()
         {
 
         }
 
-
-        public NetworkPackage(string message)
-        {
-            this.message = message;
-        }
-
         // Wiadomość typu klient-klient
-        public NetworkPackage(string sendingClientId, string sendingClientIP, int sendingClientPort, string receivingClientId, short frequency, short band, string message)
+        public NetworkPackage(string sendingClientId, string sendingClientIP, int sendingClientPort, string receivingClientId, double lambda, string message)
         {
             this.sendingClientId = sendingClientId;
             this.currentIP = sendingClientIP;
@@ -93,14 +64,10 @@ namespace ToolsLibrary
             this.receivingClientId = receivingClientId;
             this.receivingClientIP = null;
             this.message = message;
-            this.frequency = frequency;
-            this.band = band;
             this.helloMessage = false;
+            this.lambda = lambda;
             this.managementMessage = false;
-            this.capacity = 0;
-            this.fromCPCC = false;
-            this.fromNcc = false;
-            this.toSubnetwork = false;
+            this.MMsgType = Command.Client_To_Client;
         }
 
         // Wiadomość typu HELLO od węzła sieci
@@ -113,113 +80,52 @@ namespace ToolsLibrary
             this.receivingClientIP = null;
             this.currentPort = clientPort;
             this.helloMessage = true;
+            this.lambda = 0.0;
             this.managementMessage = false;
-            this.capacity = 0;
-            this.fromCPCC = false;
-            this.fromNcc = false;
-            this.toSubnetwork = false;
+            this.MMsgType = Command.HELLO;
         }
 
-        // Wiadomość typu CallRequest_req od cpcc do ncc
-        public NetworkPackage(string sendingClientId, string receivingClientId, int sendingClientPort, int capacity)
+        public NetworkPackage(string sendingClientId)
         {
             this.sendingClientId = sendingClientId;
-            this.currentIP = null;
-            this.message = "CallRequest_req";
+            this.currentIP = "";
+            this.message = "";
+            this.receivingClientId = "Cloud";
+            this.receivingClientIP = null;
+            this.currentPort = 0;
+            this.helloMessage = true;
+            this.lambda = 0.0;
+            this.managementMessage = true;
+            this.MMsgType = Command.HELLO;
+        }
+
+        public NetworkPackage(string sendingClientId, string receivingClientId, Command commandType, string message)
+        {
+            this.sendingClientId = sendingClientId;
+            this.currentIP = "";
+            this.message = message;
             this.receivingClientId = receivingClientId;
             this.receivingClientIP = null;
-            this.currentPort = sendingClientPort;
+            this.currentPort = 0;
+            this.lambda = 0.0;
             this.helloMessage = false;
-            this.managementMessage = false;
-            this.capacity = capacity;
-            this.fromCPCC = true;
-            this.fromNcc = false;
-            this.toSubnetwork = false;
-        }
-        //Wiadomość typu ConnectionRequest_req od pierwszego w kolejności ncc do subnetworku
-        public NetworkPackage(string sendingClientIP, string receivingClientIP, int capacity, bool fromNcc)
-        {
-            this.sendingClientId = null;
-            this.currentIP = sendingClientIP;
-            this.message = "ConnectionRequest_req";
-            this.receivingClientId = null;
-            this.receivingClientIP = receivingClientIP;
-            this.currentPort = 0;
-            this.helloMessage = true;
-            this.managementMessage = false;
-            this.capacity = capacity;
-            this.fromCPCC = false;
-            this.fromNcc = fromNcc;
-            this.toSubnetwork = true;
-        }
-
-        //Wiadomość typu ConnectionRequest_rsp subnetworku do pierwszego w kolejności ncc
-        public NetworkPackage(string sendingClientIP, string receivingClientIP, string slots )
-        {
-            this.sendingClientId = null;
-            this.currentIP = sendingClientIP;
-            this.message = "ConnectionRequest_rsp";
-            this.receivingClientId = null;
-            this.receivingClientIP = receivingClientIP;
-            this.currentPort = 0;
-            this.helloMessage = true;
-            this.managementMessage = false;
-            this.capacity = 0;
-            this.fromCPCC = false;
-            this.fromNcc = false;
-            this.slots = slots;
-            this.toSubnetwork = false;
-        }
-
-        //Wiadomość typu CallCoordination_req od pierwszego w kolejności ncc do drugiego
-        public NetworkPackage(string sendingClientIP, string receivingClientIP, string slots, bool fromNcc)
-        {
-            this.sendingClientId = null;
-            this.currentIP = sendingClientIP;
-            this.message = "CallCoordination_req";
-            this.receivingClientId = null;
-            this.receivingClientIP = receivingClientIP;
-            this.currentPort = 0;
-            this.helloMessage = true;
-            this.managementMessage = false;
-            this.capacity = 0;
-            this.fromCPCC = false;
-            this.fromNcc = fromNcc;
-            this.slots = slots;
-            this.toSubnetwork = false;
-        }
-
-        //Wiadomość typu ConnectionRequest_req od drugiego w kolejności ncc do subnetworku
-        public NetworkPackage(string sendingClientIP, string receivingClientIP, string slots, bool fromNcc, bool toSubnetwork)
-        {
-            this.sendingClientId = null;
-            this.currentIP = sendingClientIP;
-            this.message = "ConnectionRequest_req";
-            this.receivingClientId = null;
-            this.receivingClientIP = receivingClientIP;
-            this.currentPort = 0;
-            this.helloMessage = true;
-            this.managementMessage = false;
-            this.capacity = 0;
-            this.fromCPCC = false;
-            this.fromNcc = fromNcc;
-            this.slots = slots;
-            this.toSubnetwork = toSubnetwork;
-        }
-
-        public NetworkPackage(short frequency, short band, string message)
-        {
-            this.message = "";
-            this.frequency = frequency;
-            this.band = band;
-            this.helloMessage = true;
             this.managementMessage = true;
-            this.capacity = 0;
-            this.fromCPCC = false;
-            this.fromNcc = false;
-            this.receivingClientIP = null;
+            this.MMsgType = commandType;
         }
 
+        public NetworkPackage(string sendingClientId, string receivingClientId, Command commandType)
+        {
+            this.sendingClientId = sendingClientId;
+            this.currentIP = "";
+            this.message = "";
+            this.receivingClientId = receivingClientId;
+            this.receivingClientIP = null;
+            this.currentPort = 0;
+            this.lambda = 0.0;
+            this.helloMessage = false;
+            this.managementMessage = true;
+            this.MMsgType = commandType;
+        }
 
 
         // Konstruktor do deserializatora
@@ -232,31 +138,9 @@ namespace ToolsLibrary
             message = (string)serializationInfo.GetValue("message", typeof(string));
             helloMessage = (bool)serializationInfo.GetValue("helloMessage", typeof(bool));
             managementMessage = (bool)serializationInfo.GetValue("managementMessage", typeof(bool));
-            capacity = (int)serializationInfo.GetValue("capacity", typeof(int));
-            fromCPCC = (bool)serializationInfo.GetValue("fromCPCC", typeof(bool));
-            fromNcc = (bool)serializationInfo.GetValue("fromNcc",typeof(bool));
             receivingClientIP = (string)serializationInfo.GetValue("recivingClientIP",typeof(string));
-            slots = (string)serializationInfo.GetValue("slots", typeof(string));
-            toSubnetwork = (bool)serializationInfo.GetValue("toSubnetwork", typeof(bool));
-        }
-
-
-        public NetworkPackage CloneNetworkPackage()
-        {
-            NetworkPackage result = new NetworkPackage();
-
-            result.sendingClientId = this.sendingClientId;
-            result.currentIP = this.currentIP;
-            result.currentPort = this.currentPort;
-            result.receivingClientId = this.receivingClientId;
-            result.message = this.message;
-            result.frequency = this.frequency;
-            result.band = this.band;
-            result.helloMessage = false;
-            result.managementMessage = false;
-            result.capacity = 0;
-
-            return result;
+            MMsgType = (Command)serializationInfo.GetValue("MMsgType", typeof(Command));
+            lambda = (double)serializationInfo.GetValue("lambda", typeof(double));
         }
 
         public void GetObjectData(SerializationInfo serializationInfo, StreamingContext context)
@@ -273,12 +157,9 @@ namespace ToolsLibrary
             serializationInfo.AddValue("message", message);
             serializationInfo.AddValue("helloMessage", helloMessage);
             serializationInfo.AddValue("managementMessage", managementMessage);
-            serializationInfo.AddValue("capacity", capacity);
-            serializationInfo.AddValue("fromCPCC", fromCPCC);
-            serializationInfo.AddValue("fromNcc", fromNcc);
             serializationInfo.AddValue("recivingClientIP",receivingClientIP);
-            serializationInfo.AddValue("slots",slots);
-            serializationInfo.AddValue("toSubnetwork", toSubnetwork);
+            serializationInfo.AddValue("MMsgType", MMsgType);
+            serializationInfo.AddValue("lambda", lambda);
         }
     }
 }

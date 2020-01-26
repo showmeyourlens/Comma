@@ -10,8 +10,8 @@ namespace CableCloud
              
         static void Main(string[] args)
         {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Clear();
             NodeCloudCommunication cloudCommunicator = new NodeCloudCommunication(args[0], args[1], args[2]);
 

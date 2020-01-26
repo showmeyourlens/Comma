@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
 
-namespace CableCloud
+namespace ClientNodeNS
 {
     public class CloudCommunication
     {
@@ -19,9 +19,10 @@ namespace CableCloud
         public readonly int instancePort;
         public readonly string emulationNodeId;
         public readonly string emulationNodeAddress;
-        public readonly int emulationNodePort;       
+        public readonly int emulationNodePort;
+        public ClientNode clientNode;
 
-        public CloudCommunication(string instancePort, string nodeId, string nodeEmulationAddress, string nodeEmulationPort)
+        public CloudCommunication(ClientNode clientNode, string instancePort, string nodeId, string nodeEmulationAddress, string nodeEmulationPort)
         { 
             this.instanceAddress = IPAddress.Parse("127.0.0.1");
             this.cloudPort = 62572;
@@ -30,6 +31,7 @@ namespace CableCloud
             this.emulationNodeAddress = nodeEmulationAddress;
             this.emulationNodePort = Int32.Parse(nodeEmulationPort);
             this.sendDone = new ManualResetEvent(false);
+            this.clientNode = clientNode;
         }
         public void Start()
         {
@@ -164,7 +166,15 @@ namespace CableCloud
         }
         private void ProcessReceivedManagementMessage(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine(networkPackage.message);
+            switch(networkPackage.MMsgType)
+            {
+                case Command.Call_Indication:
+                    clientNode.cpcc.CallIndication(networkPackage);
+                    break;
+                case Command.Call_Confirmed:
+                    clientNode.cpcc.CallConfirmed(networkPackage);
+                    break;
+            }
         }
     }
 }
