@@ -198,7 +198,6 @@ namespace Subnetwork
                     }
                     else
                     {
-                        Console.WriteLine(networkPackage.receivingClientId);
                         subnetworks.Find(x => String.Equals(networkPackage.receivingClientId, x.emulationNodeId)).rc.OXCSet(networkPackage);
                     }
                     break;

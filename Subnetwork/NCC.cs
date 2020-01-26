@@ -53,7 +53,6 @@ namespace Subnetwork
         public void ConnectionConfirmed(NetworkPackage networkPackage)
         {
             TimeStamp.WriteLine("{0} >> Received CONNECTION CONFIRMED from {1}", NCC_Name, networkPackage.sendingClientId);
-            Console.WriteLine(TimeStamp.TAB + " " + networkPackage.message);
             string[] connectedClients = currentCall.Split(' ');
             TimeStamp.WriteLine("{0} >> CALL CONFIRMED sent to {1}", NCC_Name, "CPCC_A_1_" + connectedClients[0]);
             domain.Send(new NetworkPackage(
