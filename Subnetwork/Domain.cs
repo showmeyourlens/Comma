@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -20,10 +21,10 @@ namespace Subnetwork
         private readonly int cloudPort;
         public readonly int instancePort;
         public readonly string emulationNodeId;
+        public List<Subnetwork> subnetworks;
         public NCC ncc;
-        public RC rc;
-        public CC cc;
-        public PC pc;
+        public DomainCC domainCC;
+        public DomainRC domainRC;
 
 
         static void Main(string[] args)
@@ -37,7 +38,6 @@ namespace Subnetwork
             }
             domain.Stop();
         }
-
         public Domain(string nodeId, string instancePort)
         {
             this.instanceAddress = IPAddress.Parse("127.0.0.1");
@@ -46,10 +46,14 @@ namespace Subnetwork
             this.emulationNodeId = nodeId;
             this.sendDone = new ManualResetEvent(false);
             this.ncc = new NCC(this);
-            this.cc = new CC(this);
-            this.rc = new RC(this);
-
+            this.domainCC = new DomainCC(this);
+            this.domainRC = new DomainRC(this);
+            this.subnetworks = new List<Subnetwork>();
+            subnetworks.Add(new Subnetwork(this, "1"));
+            subnetworks.Add(new Subnetwork(this, "2"));
         }
+
+
         public void Start()
         {
             clientSocket = new Socket(instanceAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -188,10 +192,21 @@ namespace Subnetwork
                     ncc.CallIndication(networkPackage);
                     break;
                 case Command.OXC_Set:
-                    rc.OXCSet(networkPackage);
+                    if(String.Equals(networkPackage.receivingClientId, domainRC.RC_Name))
+                    {
+                        domainRC.OXCSet(networkPackage);
+                    }
+                    else
+                    {
+                        Console.WriteLine(networkPackage.receivingClientId);
+                        subnetworks.Find(x => String.Equals(networkPackage.receivingClientId, x.emulationNodeId)).rc.OXCSet(networkPackage);
+                    }
                     break;
                 case Command.Path_Set:
-                    cc.PathSet(networkPackage);
+                    domainCC.PathSet(networkPackage);
+                    break;
+                default:
+                    TimeStamp.WriteLine(emulationNodeId + " Undecognised message type");
                     break;
             }
         }

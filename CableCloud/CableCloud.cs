@@ -166,22 +166,41 @@ namespace CableCloud
             }
             if (received.managementMessage)
             {
-                int subnetwork;
+                string errorCopy = received.receivingClientId;
+
                 if (received.receivingClientId.Contains("_"))
                 {
-                    if (Int32.TryParse(received.receivingClientId.Split('_')[1], out subnetwork))
+                    string[] address = received.receivingClientId.Split('_');
+                    if(address.Length == 2)
                     {
-                        received.receivingClientId = subnetwork.ToString();
+                        received.receivingClientId = address[1];
+                        Send(targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId).TargetSocket, received);
+                        return;
                     }
-                    if (received.receivingClientId.Contains("CPCC"))
+                    if(address.Length == 3) 
                     {
-                        received.receivingClientId = received.receivingClientId.Split('_')[0];
+                        received.receivingClientId = address[1] + "_" + address[2];
+                        Send(targetNetworkObjects.Find(x => x.TargetObjectId == address[1]).TargetSocket, received);
+                        return;
                     }
+                    if (address.Length == 4)
+                    {
+                        received.receivingClientId = address[3];
+                        Send(targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId).TargetSocket, received);
+                        return;
+                    }
+
                 }
-
-                Send(targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId).TargetSocket, received);
-
-
+                if (targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId) == null)
+                {
+                    Console.WriteLine("Cloud routing went wrong. Received from " + errorCopy);
+                    return;
+                }
+                else
+                {
+                    Send(targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId).TargetSocket, received);
+                }
+               
                 return;
             }
             if (!received.helloMessage && !received.managementMessage)
@@ -242,10 +261,9 @@ namespace CableCloud
                 targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[1], link.ConnectedPorts[0], link.ConnectedNodes[0]));
             }
 
-            targetNetworkObjects.Add(new TargetNetworkObject("1"));
-            targetNetworkObjects.Add(new TargetNetworkObject("C1_CPCC"));
-            targetNetworkObjects.Add(new TargetNetworkObject("C2_CPCC"));
-            targetNetworkObjects.Add(new TargetNetworkObject("C3_CPCC"));
+            targetNetworkObjects.Add(new TargetNetworkObject("A"));
+            targetNetworkObjects.Add(new TargetNetworkObject("A_C1"));
+            targetNetworkObjects.Add(new TargetNetworkObject("A_C2"));
         }
 
     }

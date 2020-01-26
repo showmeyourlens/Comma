@@ -20,14 +20,14 @@ namespace ClientNodeNS
         public CPCC(ClientNode clientNode)
         {
             this.clientNode = clientNode;
-            CPCC_Name = clientNode.cloudCommunicator.emulationNodeId + "_CPCC";
+            CPCC_Name = "CPCC_" + clientNode.domainId + "_" + clientNode.cloudCommunicator.emulationNodeId;
         }
 
         public void CallRequest(string toNode, string bandwidth)
         {
             NetworkPackage networkPackage = new NetworkPackage(
                 CPCC_Name,
-                "NCC_" + clientNode.subnetworkId,
+                "NCC_" + clientNode.domainId,
                 Command.Call_Request,
                 toNode + " " + bandwidth
                 );

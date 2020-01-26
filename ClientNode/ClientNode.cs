@@ -10,7 +10,7 @@ namespace ClientNodeNS
         public List<ClientSenderConfig> contactList;
         public CloudCommunication cloudCommunicator;
         public CPCC cpcc;
-        public int subnetworkId;
+        public string domainId;
 
 
         static void Main(string[] args)
@@ -28,13 +28,15 @@ namespace ClientNodeNS
             clientNode.contactList = clientNode.CreateDumbClientConfig(args[1]);
 
             clientNode.cloudCommunicator = new CloudCommunication(clientNode, args[0], args[1], args[2], args[3]);
+            clientNode.domainId = args[4];
             clientNode.cpcc = new CPCC(clientNode);
-            clientNode.subnetworkId = Int32.Parse(args[4]);
+
 
             Console.WriteLine("Starting client node with following parameters:");
             Console.WriteLine("Address on device: {0}:{1}", clientNode.cloudCommunicator.instanceAddress, clientNode.cloudCommunicator.instancePort);
-            Console.WriteLine("Address in emulated network: {0}:{1}", clientNode.cloudCommunicator.emulationNodeAddress, clientNode.cloudCommunicator.emulationNodePort);
+            Console.WriteLine("Address in emulated network: {0}:{1}, domain: {2}", clientNode.cloudCommunicator.emulationNodeAddress, clientNode.cloudCommunicator.emulationNodePort, clientNode.domainId);
             Console.WriteLine("Node identificator: {0}", clientNode.cloudCommunicator.emulationNodeId);
+            
 
             try
             {

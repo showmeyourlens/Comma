@@ -174,6 +174,9 @@ namespace ClientNodeNS
                 case Command.Call_Confirmed:
                     clientNode.cpcc.CallConfirmed(networkPackage);
                     break;
+                default:
+                    TimeStamp.WriteLine("Undecognised message type");
+                    break;
             }
         }
     }
