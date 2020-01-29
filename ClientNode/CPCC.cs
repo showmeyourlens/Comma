@@ -28,23 +28,23 @@ namespace ClientNodeNS
             NetworkPackage networkPackage = new NetworkPackage(
                 CPCC_Name,
                 "NCC_" + clientNode.domainId,
-                Command.Call_Request,
+                Command.Call_Request_Request,
                 toNode + " " + bandwidth
                 );
-            TimeStamp.WriteLine("{0} >> CALL REQUEST sent to {1}", CPCC_Name, networkPackage.receivingClientId);
+            TimeStamp.WriteLine("{0} >> CALL REQUEST REQUEST sent to {1}", CPCC_Name, networkPackage.receivingClientId);
             clientNode.cloudCommunicator.Send(networkPackage);
         }
 
-        public void CallIndication(NetworkPackage networkPackage)
+        public void CallAccept(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine("{0} >> received CALL INDICATION from {1}", CPCC_Name, networkPackage.sendingClientId);
+            //TimeStamp.WriteLine("{0} >> received CALL ACCEPT REQUEST from {1}", CPCC_Name, networkPackage.sendingClientId);
             clientNode.cloudCommunicator.Send(new NetworkPackage(
                 CPCC_Name,
                 networkPackage.sendingClientId,
-                Command.Call_Indication_Confirmed,
+                Command.Call_Accept_Confirmed,
                 networkPackage.message
                 ));
-            TimeStamp.WriteLine("{0} >> CALL INDICATION CONFIRMED sent to {1}", CPCC_Name, networkPackage.sendingClientId);
+            TimeStamp.WriteLine("{0} >> CALL ACCEPT RESPONSE sent to {1}", CPCC_Name, networkPackage.sendingClientId);
 
         }
 

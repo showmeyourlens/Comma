@@ -167,6 +167,11 @@ namespace CableCloud
             if (received.managementMessage)
             {
                 string errorCopy = received.receivingClientId;
+                if(received.MMsgType == Command.Break_The_Link)
+                {
+                    targetNetworkObjects.FindAll(x => x.LinkId == Int32.Parse(received.message)).ForEach(x => x.IsLinkDown = true);
+                    return;
+                } 
 
                 if (received.receivingClientId.Contains("_"))
                 {
@@ -193,7 +198,7 @@ namespace CableCloud
                 }
                 if (targetNetworkObjects.Find(x => x.TargetObjectId == received.receivingClientId) == null)
                 {
-                    Console.WriteLine("Cloud routing went wrong. Received from " + errorCopy);
+                    Console.WriteLine("Cloud routing went wrong. Received from " + received.sendingClientId+ " to " + errorCopy);
                     return;
                 }
                 else
@@ -207,13 +212,20 @@ namespace CableCloud
             {
                 TargetNetworkObject target = targetNetworkObjects.Find(x => x.InputPort == received.currentPort);
                 if (target != null) {
-                    TimeStamp.WriteLine("Received package from {0}", String.Concat(received.currentIP, ":", received.currentPort));
+                    TimeStamp.WriteLine("Received signal from {0}", String.Concat(received.currentIP, ":", received.currentPort));
                     if (target.TargetSocket != null)
                     {
-                        received.currentIP = target.TargetObjectAddress;
-                        received.currentPort = target.TargetPort;
-                        Send(target.TargetSocket, received);
-                        Console.WriteLine("{0} Passing packet to {1}", TimeStamp.TAB, String.Concat(target.TargetObjectAddress, ":", target.TargetPort));
+                        if (target.IsLinkDown == false)
+                        {
+                            received.currentIP = target.TargetObjectAddress;
+                            received.currentPort = target.TargetPort;
+                            Send(target.TargetSocket, received);
+                            Console.WriteLine("{0} Passing signal to {1}", TimeStamp.TAB, String.Concat(target.TargetObjectAddress, ":", target.TargetPort));
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} Link is down. Signal lost.", TimeStamp.TAB);
+                        }
                     }
                     else
                     {
@@ -257,11 +269,12 @@ namespace CableCloud
             // tworzenie "książki adresowej" w chmurze. Adresy węzłów są pobierane z linków, a te z XMLa
             foreach(Link link in networkLinks)
             {
-                targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[0], link.ConnectedPorts[1], link.ConnectedNodes[1]));
-                targetNetworkObjects.Add(new TargetNetworkObject(link.ConnectedPorts[1], link.ConnectedPorts[0], link.ConnectedNodes[0]));
+                targetNetworkObjects.Add(new TargetNetworkObject(link.LinkId, link.ConnectedPorts[0], link.ConnectedPorts[1], link.ConnectedNodes[1]));
+                targetNetworkObjects.Add(new TargetNetworkObject(link.LinkId, link.ConnectedPorts[1], link.ConnectedPorts[0], link.ConnectedNodes[0]));
             }
 
             targetNetworkObjects.Add(new TargetNetworkObject("A"));
+            targetNetworkObjects.Add(new TargetNetworkObject("LRMs"));
             targetNetworkObjects.Add(new TargetNetworkObject("A_C1"));
             targetNetworkObjects.Add(new TargetNetworkObject("A_C2"));
         }

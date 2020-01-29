@@ -159,7 +159,7 @@ namespace Subnetwork
                 NetworkPackage networkPackage = DeserializeMessage(receiverState, bytesRead);
                 if (networkPackage.helloMessage)
                 {
-                    TimeStamp.WriteLine("Connected to cloud");
+                   // TimeStamp.WriteLine("Connected to cloud");
                 }
                 if (networkPackage.managementMessage)
                 {
@@ -185,10 +185,10 @@ namespace Subnetwork
         {
             switch (networkPackage.MMsgType)
             {
-                case Command.Call_Request:
+                case Command.Call_Request_Request:
                     ncc.CallRequest(networkPackage);
                     break;
-                case Command.Call_Indication_Confirmed:
+                case Command.Call_Accept_Confirmed:
                     ncc.CallIndication(networkPackage);
                     break;
                 case Command.OXC_Set:
@@ -204,8 +204,48 @@ namespace Subnetwork
                 case Command.Path_Set:
                     domainCC.PathSet(networkPackage);
                     break;
+                case Command.Used_Cracks_Response:
+                    string[] split = networkPackage.receivingClientId.Split('_');
+                    if (split.Length == 1)
+                    {
+                        domainRC.UsedCracksResponse(networkPackage);
+                    }
+                    else
+                    {
+                        subnetworks.Find(x => String.Equals(x.emulationNodeId, networkPackage.receivingClientId)).rc.UsedSlotsResponse(networkPackage);
+                    }
+                    break;
+                case Command.Slots_Allocated:
+                    string[] split1 = networkPackage.receivingClientId.Split('_');
+                    if (split1.Length == 1)
+                    {
+                        domainCC.LinkConnectionResponse(networkPackage);
+                    }
+                    else
+                    {
+                        subnetworks.Find(x => String.Equals(x.emulationNodeId, networkPackage.receivingClientId)).cc.LinkConnectionResponse(networkPackage);
+                    }
+                    break;
+                case Command.Link_Down:
+                    if (String.Equals(networkPackage.receivingClientId, domainCC.CC_Name))
+                    {
+                        domainCC.LinkDown(networkPackage);
+                    }
+                    else
+                    {
+                        subnetworks.Find(x => String.Equals(networkPackage.receivingClientId, x.emulationNodeId)).cc.LinkDown(networkPackage);
+                    }
+                    break;
+                case Command.Remove_Link_Connection_Response:
+                    
+                        subnetworks.Find(x => String.Equals(networkPackage.receivingClientId, x.emulationNodeId)).cc.RemoveLinkConnection(networkPackage);
+                    
+                    break;
                 default:
-                    TimeStamp.WriteLine(emulationNodeId + " Unrecognised message type");
+                    if (!String.Equals(networkPackage.sendingClientId, "Cloud"))
+                    {
+                        Console.WriteLine();
+                    }
                     break;
             }
         }

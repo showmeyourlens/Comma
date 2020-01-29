@@ -1,37 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ToolsLibrary;
 
-namespace ClientNodeNS
+namespace LRMs
 {
-    public class CloudCommunication
+    public class LRMCommunicator
     {
         public readonly IPAddress instanceAddress;
         private Socket cloudSocket;
         private Socket clientSocket;
         private ManualResetEvent sendDone;
         private readonly int cloudPort;
-        public readonly int instancePort;
-        public readonly string emulationNodeId;
-        public readonly string emulationNodeAddress;
-        public readonly int emulationNodePort;
-        public ClientNode clientNode;
-
-        public CloudCommunication(ClientNode clientNode, string instancePort, string nodeId, string nodeEmulationAddress, string nodeEmulationPort)
-        { 
+        private readonly int instancePort;
+        public List<LRM> LRMs;
+        public LRMCommunicator(string instancePort)
+        {
             this.instanceAddress = IPAddress.Parse("127.0.0.1");
             this.cloudPort = 62572;
             this.instancePort = Int32.Parse(instancePort);
-            this.emulationNodeId = nodeId;
-            this.emulationNodeAddress = nodeEmulationAddress;
-            this.emulationNodePort = Int32.Parse(nodeEmulationPort);
             this.sendDone = new ManualResetEvent(false);
-            this.clientNode = clientNode;
+            this.LRMs = LRMParser.ReadLinks();
         }
         public void Start()
         {
@@ -58,14 +54,14 @@ namespace ClientNodeNS
         private void ConnectCallback(IAsyncResult ar)
         {
             try
-            {           
+            {
                 ReceiverState state = new ReceiverState();
                 state.WorkSocket = (Socket)ar.AsyncState;
                 cloudSocket = state.WorkSocket;
                 cloudSocket.EndConnect(ar);
                 Send(CreateHelloMessage());
 
-                Task.Run(() => Receive(cloudSocket));              
+                Task.Run(() => Receive(cloudSocket));
             }
             catch (ObjectDisposedException e0)
             {
@@ -132,13 +128,13 @@ namespace ClientNodeNS
         private void ReceiveCallback(IAsyncResult ar)
         {
             ReceiverState receiverState = (ReceiverState)ar.AsyncState;
-            try 
-            { 
+            try
+            {
                 int bytesRead = receiverState.WorkSocket.EndReceive(ar);
                 NetworkPackage networkPackage = DeserializeMessage(receiverState, bytesRead);
                 if (networkPackage.helloMessage)
                 {
-                    TimeStamp.WriteLine("Connected to cloud");
+                   // TimeStamp.WriteLine("Connected to cloud");
                 }
                 if (networkPackage.managementMessage)
                 {
@@ -158,26 +154,121 @@ namespace ClientNodeNS
 
         private NetworkPackage CreateHelloMessage()
         {
-            return new NetworkPackage(emulationNodeId, emulationNodeAddress, emulationNodePort);
+            return new NetworkPackage("LRMs");
         }
         private void ProcessReceivedClientMessage(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine("Received message from {0}. Message: {1}", networkPackage.sendingClientId, networkPackage.message);
+            throw new NotImplementedException();
         }
         private void ProcessReceivedManagementMessage(NetworkPackage networkPackage)
         {
-            switch(networkPackage.MMsgType)
+            switch (networkPackage.MMsgType)
             {
-                case Command.Call_Accept_Request:
-                    clientNode.cpcc.CallAccept(networkPackage);
+                case Command.Used_Slots_Request:
+                    UsedCracksRequest(networkPackage);
                     break;
-                case Command.Call_Confirmed:
-                    clientNode.cpcc.CallConfirmed(networkPackage);
+                case Command.Link_Connection_Request:
+                    AllocateSlots(networkPackage);
+                    break;
+                case Command.Remove_Link_Connection_Request:
+                    DeallocateSlots(networkPackage);
                     break;
                 default:
-                    TimeStamp.WriteLine("Undecognised message type");
                     break;
             }
+        }
+
+        private void DeallocateSlots(NetworkPackage networkPackage)
+        {
+            //TimeStamp.WriteLine("{0} >> Received RM L CON REQ from {1} {2}", "LRMs", networkPackage.sendingClientId, networkPackage.message);
+
+            string[] splittedMessage = networkPackage.message.Split(':');
+            string[] MessageLRMs = splittedMessage[0].Split(' ');
+
+            for (int i = 0; i < MessageLRMs.Length; i++)
+            {
+                //TimeStamp.WriteLine("{0} >> Received ALLOCATE SLOTS from {1}", "LRM_" + MessageLRMs[i], networkPackage.sendingClientId);
+                LRM lrm = LRMs.Find(x => x.linkId == Int32.Parse(MessageLRMs[i]));
+                lrm.ReleaseCracks(splittedMessage[1]);
+            }
+            TimeStamp.WriteLine("{0} >> REMOVE LINK CONNECTION RESPONSE sent to {1}", "LRMs", networkPackage.sendingClientId);
+            NetworkPackage response = new NetworkPackage(
+                "LRMs",
+                networkPackage.sendingClientId,
+                Command.Remove_Link_Connection_Response
+                );
+            Send(response);
+        }
+
+        public void AlarmCC(int lrmID)
+        {
+            LRM lrm = LRMs.Find(x => x.linkId == lrmID);
+            foreach(string contact in lrm.contacts)
+            {
+                TimeStamp.WriteLine("{0} >> LINK DOWN sent to {1}, link: {2}", "LRMs", contact, lrm.linkId);
+                Send(new NetworkPackage(
+                    "LRMs",
+                    contact,
+                    Command.Link_Down,
+                    lrm.linkId.ToString()
+                    ));
+            }
+        }
+
+        private void AllocateSlots(NetworkPackage networkPackage)
+        {
+            //TimeStamp.WriteLine("{0} >> Received L CON REQ from {1} {2}", "LRMs", networkPackage.sendingClientId, networkPackage.message);
+
+            string[] splittedMessage = networkPackage.message.Split(':');
+            string[] MessageLRMs = splittedMessage[0].Split(' ');
+     
+            for (int i=0; i<MessageLRMs.Length; i++)
+            {
+                //TimeStamp.WriteLine("{0} >> Received ALLOCATE SLOTS from {1}", "LRM_" + MessageLRMs[i], networkPackage.sendingClientId);
+                LRM lrm = LRMs.Find(x => x.linkId == Int32.Parse(MessageLRMs[i]));
+                lrm.AddCracks(splittedMessage[1]);
+                lrm.contacts.Add(networkPackage.sendingClientId);
+            }
+            TimeStamp.WriteLine("{0} >> LINK CONNECTION RESPONSE sent to {1}", "LRMs", networkPackage.sendingClientId);
+            if (splittedMessage.Length != 3)
+            {
+                NetworkPackage response = new NetworkPackage(
+                "LRMs",
+                networkPackage.sendingClientId,
+                Command.Slots_Allocated
+                );
+                Send(response);
+            }
+            
+        }
+
+        private void UsedCracksRequest(NetworkPackage networkPackage)
+        {
+            string[] lrmIds = networkPackage.message.Split(' ');
+            List<int> usedCracks = new List<int>();
+            for (int i=0; i<lrmIds.Length; i++)
+            {
+                //TimeStamp.WriteLine("{0} >> Received USED SLOTS REQUEST from {1}", "LRM_" + lrmIds[i], networkPackage.sendingClientId);
+                usedCracks.AddRange(LRMs.Find(x => x.linkId == Int32.Parse(lrmIds[i])).busyCracks);
+            }
+            List<int> distinctList = usedCracks.Distinct().ToList();
+            StringBuilder sb = new StringBuilder(); 
+            foreach(int crack in distinctList)
+            {
+                if (distinctList.Count > 0)
+                {
+                    sb.Append(" ");
+                }
+                sb.Append(crack);
+            }
+            NetworkPackage response = new NetworkPackage(
+                "LRMs",
+                networkPackage.sendingClientId,
+                Command.Used_Cracks_Response,
+                sb.ToString()
+                );
+            TimeStamp.WriteLine("{0} >> USED SLOTS RESPONSE sent to {1}", "LRMs", networkPackage.sendingClientId);
+            Send(response);
         }
     }
 }

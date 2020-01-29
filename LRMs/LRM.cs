@@ -8,8 +8,18 @@ namespace LRMs
     {
         public int linkId;
         public int length;
+        public bool isLinkWorking;
         public List<int> busyCracks;
-        public List<string> domains;
+        public List<string> contacts;
+
+        public LRM(int id, int length)
+        {
+            linkId = id;
+            this.length = length;
+            isLinkWorking = true;
+            busyCracks = new List<int>();
+            contacts = new List<string>();
+        }
 
         public string GetBusyCracksMessage()
         {
@@ -28,12 +38,13 @@ namespace LRMs
 
         public bool AddCracks(string message)
         {
+            //FirstCrack LastCrack
             string[] cracks = message.Split(' ');
-            foreach(string crack in cracks)
+            for (int i = Int32.Parse(cracks[0]); i <= Int32.Parse(cracks[1]); i++)
             {
-                if(!busyCracks.Contains(Int32.Parse(crack)))
+                if (!busyCracks.Contains(i))
                 {
-                    busyCracks.Add(Int32.Parse(crack));
+                    busyCracks.Add(i);
                 }
                 else
                 {
@@ -46,11 +57,11 @@ namespace LRMs
         public bool ReleaseCracks(string message)
         {
             string[] cracks = message.Split(' ');
-            foreach (string crack in cracks)
+            for (int i = Int32.Parse(cracks[0]); i <= Int32.Parse(cracks[1]); i++)
             {
-                if (busyCracks.Contains(Int32.Parse(crack)))
+                if (busyCracks.Contains(i))
                 {
-                    busyCracks.Remove(Int32.Parse(crack));
+                    busyCracks.Remove(i);
                 }
                 else
                 {

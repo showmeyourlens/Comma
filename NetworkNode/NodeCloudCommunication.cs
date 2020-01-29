@@ -181,7 +181,7 @@ namespace CableCloud
             if (searchedEntry != null)
             {
                 networkPackage.currentPort = searchedEntry.outputPort;
-                Console.WriteLine(TimeStamp.TAB +" Passing to " + networkPackage.currentPort);
+                Console.WriteLine(TimeStamp.TAB + " Passing to " + networkPackage.currentPort);
                 Send(networkPackage);
             }
             else
@@ -196,31 +196,44 @@ namespace CableCloud
             {
                 TimeStamp.WriteLine("{0} >> Received SET OXC from {1}", emulationNodeId, networkPackage.sendingClientId);
                 string[] split = networkPackage.message.Split(' ');
-                CreateEntry(split[0], split[1], split[2]);
-                Send(new NetworkPackage(emulationNodeId, networkPackage.sendingClientId, Command.OXC_Set));
+                if (split.Length == 4)
+                {
+                    if (forwardingTable.Count > 0)
+                    {
+                        Console.WriteLine("{0} Setup for lambda {1} deleted", TimeStamp.TAB, forwardingTable[0].lambda);
+                        forwardingTable.Clear();
+                    }
+                    
+                    CreateEntry(split[0], split[1], split[2]);
+                }
+                else
+                {
+                    CreateEntry(split[0], split[1], split[2]);
+                    Send(new NetworkPackage(emulationNodeId, networkPackage.sendingClientId, Command.OXC_Set));
+                }
                 TimeStamp.WriteLine("{0} >> Sent OXC SET to {1}", emulationNodeId, networkPackage.sendingClientId);
             }
         }
 
         public void CreateEntry(string port1, string port2, string frequency)
         {
-            Console.WriteLine(String.Format("{0} Created entry: from port {1} pass to {2} when frequency is {3}", TimeStamp.TAB, port1, port2, frequency));
-            forwardingTable.Add(new FIBEntry(Int32.Parse(port1), Int32.Parse(port2), Int32.Parse(frequency)));
-            Console.WriteLine(String.Format("{0} Created entry: from port {1} pass to {2} when frequency is {3}", TimeStamp.TAB, port2, port1, frequency));
-            forwardingTable.Add(new FIBEntry(Int32.Parse(port2), Int32.Parse(port1), Int32.Parse(frequency)));
+            Console.WriteLine(String.Format("{0} Created entry: from port {1} pass to {2} when lambda is {3}", TimeStamp.TAB, port1, port2, frequency));
+            forwardingTable.Add(new FIBEntry(Int32.Parse(port1), Int32.Parse(port2), Double.Parse(frequency)));
+            Console.WriteLine(String.Format("{0} Created entry: from port {1} pass to {2} when lambda is {3}", TimeStamp.TAB, port2, port1, frequency));
+            forwardingTable.Add(new FIBEntry(Int32.Parse(port2), Int32.Parse(port1), Double.Parse(frequency)));
         }
-        
+
         public class FIBEntry
         {
             public int inputPort;
             public int outputPort;
-            public int frequency;
+            public double lambda;
 
-            public FIBEntry(int inputPort, int outputPort, int frequency)
+            public FIBEntry(int inputPort, int outputPort, double lambda)
             {
                 this.inputPort = inputPort;
                 this.outputPort = outputPort;
-                this.frequency = frequency;
+                this.lambda = lambda;
             }
         }
     }

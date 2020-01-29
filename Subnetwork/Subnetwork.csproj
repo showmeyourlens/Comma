@@ -53,6 +53,8 @@
     <Compile Include="Node.cs" />
     <Compile Include="PC.cs" />
     <Compile Include="RC.cs" />
+    <Compile Include="RCParser.cs" />
+    <Compile Include="SignalParamFinder.cs" />
     <Compile Include="Subnetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
