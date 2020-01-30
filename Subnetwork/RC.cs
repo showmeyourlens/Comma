@@ -58,7 +58,7 @@ namespace Subnetwork
             }
 
 
-            TimeStamp.WriteLine("{0} >> ROUTE TABLE QUERY RESPONSE sent {1}", RC_Name, networkPackage.sendingClientId);
+            TimeStamp.WriteLine("{0} >> ROUTE TABLE QUERY RESPONSE sent to {1}", RC_Name, networkPackage.sendingClientId);
             networkPackage.receivingClientId = networkPackage.sendingClientId;
             networkPackage.sendingClientId = RC_Name;
             /*
@@ -118,15 +118,15 @@ namespace Subnetwork
             if (path.status == ConnectionStatus.InProgress)
             {
                 paths.Add(path);
-                Console.WriteLine("{0} {1} found path between {2} and {3}, length: {4}", TimeStamp.TAB, RC_Name, path.from, path.to, path.length);
+                Console.WriteLine("{0} {1} :: found path between {2} and {3}, length: {4}", TimeStamp.TAB, RC_Name, path.from, path.to, path.length);
             }
             else
             {
-                Console.WriteLine("{0} {1} did not found path between {2} and {3}", TimeStamp.TAB, RC_Name, path.from, path.to);
+                Console.WriteLine("{0} {1} :: did not found path between {2} and {3}", TimeStamp.TAB, RC_Name, path.from, path.to);
             }
 
 
-            TimeStamp.WriteLine("{0} >> RESTORE PATH RESPONSE sent {1}", RC_Name, networkPackage.sendingClientId);
+            TimeStamp.WriteLine("{0} >> RESTORE PATH RESPONSE sent to {1}", RC_Name, networkPackage.sendingClientId);
             networkPackage.receivingClientId = networkPackage.sendingClientId;
             networkPackage.sendingClientId = RC_Name;
 
@@ -207,7 +207,7 @@ namespace Subnetwork
                 }
             }
             string communicate = String.Join(" ", messagesToSend.ToList().Select(x => x.receivingClientId));
-            Console.WriteLine("{0} {1} SET PATH will be send to: {2}", TimeStamp.TAB, RC_Name, communicate);
+            Console.WriteLine("{0} {1} :: SET PATH will be send to: {2}", TimeStamp.TAB, RC_Name, communicate);
             subnetwork.domain.Send(messagesToSend.Pop());
         }
 
@@ -254,13 +254,13 @@ namespace Subnetwork
 
             if (messagesToSend.Count() > 0)
             {
-                Console.WriteLine(TimeStamp.TAB + " " + RC_Name +" :: " + messagesToSend.Count() + " OXC confirmation needed");
+                Console.WriteLine(TimeStamp.TAB + " " + RC_Name +" :: " + messagesToSend.Count() + " SET OXC RESPONSE needed");
                 subnetwork.domain.Send(messagesToSend.Pop());
             }
             else
             {
                 //paths.Find(x => x.status == ConnectionStatus.InProgress).status = ConnectionStatus.Connected;
-                TimeStamp.WriteLine("{0} >> SET PATH RESPONSE to {1}", RC_Name, "CC_" + subnetwork.emulationNodeId);
+                TimeStamp.WriteLine("{0} >> SET PATH RESPONSE sent to {1}", RC_Name, "CC_" + subnetwork.emulationNodeId);
 
                 subnetwork.cc.PathSet(new NetworkPackage(
                     RC_Name,

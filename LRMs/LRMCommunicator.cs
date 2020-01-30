@@ -189,6 +189,7 @@ namespace LRMs
             {
                 //TimeStamp.WriteLine("{0} >> Received ALLOCATE SLOTS from {1}", "LRM_" + MessageLRMs[i], networkPackage.sendingClientId);
                 LRM lrm = LRMs.Find(x => x.linkId == Int32.Parse(MessageLRMs[i]));
+                Console.WriteLine("{0} {1} :: slots from {2} to {3} released", TimeStamp.TAB, "LRM_" + MessageLRMs[i], splittedMessage[1].Split(' ')[0], splittedMessage[1].Split(' ')[1]);
                 lrm.ReleaseCracks(splittedMessage[1]);
             }
             TimeStamp.WriteLine("{0} >> REMOVE LINK CONNECTION RESPONSE sent to {1}", "LRMs", networkPackage.sendingClientId);
@@ -226,7 +227,10 @@ namespace LRMs
             {
                 //TimeStamp.WriteLine("{0} >> Received ALLOCATE SLOTS from {1}", "LRM_" + MessageLRMs[i], networkPackage.sendingClientId);
                 LRM lrm = LRMs.Find(x => x.linkId == Int32.Parse(MessageLRMs[i]));
-                lrm.AddCracks(splittedMessage[1]);
+                if (lrm.AddCracks(splittedMessage[1]))
+                {
+                    Console.WriteLine("{0} {1} :: slots from {2} to {3} allocated", TimeStamp.TAB, "LRM_" + MessageLRMs[i], splittedMessage[1].Split(' ')[0], splittedMessage[1].Split(' ')[1]);
+                }
                 lrm.contacts.Add(networkPackage.sendingClientId);
             }
             TimeStamp.WriteLine("{0} >> LINK CONNECTION RESPONSE sent to {1}", "LRMs", networkPackage.sendingClientId);

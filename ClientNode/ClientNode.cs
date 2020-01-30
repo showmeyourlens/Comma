@@ -75,7 +75,7 @@ namespace ClientNodeNS
                             if (!contact.isConnection)
                             {
                                 Console.WriteLine();
-                                Console.WriteLine("Type bandwidth (in GHz/s)");
+                                Console.WriteLine("Type throughput (in Gb/s)");
                                 string ghz = Console.ReadLine();
                                 clientNode.cpcc.CallRequest(contact.receiverId, ghz);
                             }

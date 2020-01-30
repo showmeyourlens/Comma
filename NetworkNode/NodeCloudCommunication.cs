@@ -194,7 +194,7 @@ namespace CableCloud
         {
             if (networkPackage.MMsgType == Command.Set_OXC)
             {
-                TimeStamp.WriteLine("{0} >> Received SET OXC from {1}", emulationNodeId, networkPackage.sendingClientId);
+                TimeStamp.WriteLine("{0} >> Received SET OXC REQUEST from {1}", emulationNodeId, networkPackage.sendingClientId);
                 string[] split = networkPackage.message.Split(' ');
                 if (split.Length == 4)
                 {
@@ -211,7 +211,7 @@ namespace CableCloud
                     CreateEntry(split[0], split[1], split[2]);
                     Send(new NetworkPackage(emulationNodeId, networkPackage.sendingClientId, Command.OXC_Set));
                 }
-                TimeStamp.WriteLine("{0} >> Sent OXC SET to {1}", emulationNodeId, networkPackage.sendingClientId);
+                TimeStamp.WriteLine("{0} >> SET OXC RESPONSE to {1}", emulationNodeId, networkPackage.sendingClientId);
             }
         }
 

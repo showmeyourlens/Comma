@@ -40,6 +40,7 @@ namespace Subnetwork
             //TimeStamp.WriteLine("{0} >> Received PATH SET from {1}", CC_Name, networkPackage.sendingClientId);
             networkPackage.sendingClientId = CC_Name;
             networkPackage.receivingClientId = subnetwork.domain.domainCC.CC_Name;
+            TimeStamp.WriteLine("{0} >> SET PATH RESPONSE sent to {1}", CC_Name, "CC_" + subnetwork.domain.emulationNodeId);
             subnetwork.domain.domainCC.PathSet(networkPackage);
             //NetworkPackage response = new NetworkPackage(
             //    CC_Name,
