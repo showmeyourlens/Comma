@@ -13,6 +13,8 @@ namespace Subnetwork
         public string NCC_Name;
         public string currentCall;
         public string currentBandwidth;
+        string destinationCPCC;
+        string requestingCPCC;
         public NCC(Domain domain)
         {
             this.domain = domain;
@@ -31,16 +33,17 @@ namespace Subnetwork
             TimeStamp.WriteLine("NCC_" + domain.emulationNodeId + " >> CAC REQUEST sent to PC_" + domain.emulationNodeId);
             TimeStamp.WriteLine("PC_" + domain.emulationNodeId + " >> CAC RESPONSE sent to NCC_" + domain.emulationNodeId);
 
-            string destination = "CPCC_A_1_" + networkPackage.message.Split(' ')[0];
+            destinationCPCC = "CPCC_A_1_" + networkPackage.message.Split(' ')[0];
+            requestingCPCC = networkPackage.sendingClientId;
             currentBandwidth = networkPackage.message.Split(' ')[1];
             currentCall = String.Format("{0} {1}", networkPackage.sendingClientId.Split('_')[3], networkPackage.message);
             domain.Send(new NetworkPackage(
                 NCC_Name,
-                destination,
+                destinationCPCC,
                 Command.Call_Accept_Request,
                 currentCall
                 )) ;
-            TimeStamp.WriteLine("{0} >> CALL ACCEPT REQUEST sent to {1}", NCC_Name, destination);
+            TimeStamp.WriteLine("{0} >> CALL ACCEPT REQUEST sent to {1}", NCC_Name, destinationCPCC);
         }
 
         public void CallIndication(NetworkPackage networkPackage)
@@ -60,19 +63,12 @@ namespace Subnetwork
         {
             //TimeStamp.WriteLine("{0} >> Received CONNECTION CONFIRMED from {1}", NCC_Name, networkPackage.sendingClientId);
             string[] connectedClients = currentCall.Split(' ');
-            TimeStamp.WriteLine("{0} >> CALL CONFIRMED sent to {1}", NCC_Name, "CPCC_A_1_" + connectedClients[0]);
+            TimeStamp.WriteLine("{0} >> CALL REQUEST RESPONSE sent to {1}", NCC_Name, requestingCPCC);
             domain.Send(new NetworkPackage(
                 NCC_Name,
-                "CPCC_A_1_" + connectedClients[0],
+                requestingCPCC,
                 Command.Call_Confirmed,
                 connectedClients[1]
-                ));
-            TimeStamp.WriteLine("{0} >> CALL CONFIRMED sent to {1}", NCC_Name, "CPCC_A_2_" + connectedClients[1]);
-            domain.Send(new NetworkPackage(
-                NCC_Name,
-                "CPCC_A_1_" + connectedClients[1],
-                Command.Call_Confirmed,
-                connectedClients[0]
                 ));
         }
     }

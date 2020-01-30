@@ -174,19 +174,19 @@ namespace CableCloud
 
         private void ProcessReceivedClientMessage(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine("Client Message on port" + networkPackage.currentPort);
+            TimeStamp.WriteLine("Client Message on port " + networkPackage.currentPort);
 
             FIBEntry searchedEntry = forwardingTable.Find(x => x.inputPort == networkPackage.currentPort);
 
             if (searchedEntry != null)
             {
                 networkPackage.currentPort = searchedEntry.outputPort;
-                Console.WriteLine(TimeStamp.TAB + " Passing to " + networkPackage.currentPort);
+                Console.WriteLine("{0} Lambda: {1} -> passing to port {2}", TimeStamp.TAB, searchedEntry.lambda, networkPackage.currentPort);
                 Send(networkPackage);
             }
             else
             {
-                Console.WriteLine("no forwarding entry");
+                Console.WriteLine("No forwarding entry");
             }
         }
 

@@ -46,7 +46,7 @@ namespace Subnetwork
                 MiddleLambda = lightSpeed / middleFreq;
 
             }
-            Console.WriteLine(TimeStamp.TAB + String.Format(" Lambda: {0:N2}nm, First Crack: {1}, Last Crack: {2}", MiddleLambda, FirstCrack, LastCrack));
+            Console.WriteLine(TimeStamp.TAB + String.Format(" Lambda: {0:N2}nm, First slot: {1}, Last slot: {2}", MiddleLambda, FirstCrack, LastCrack));
             return String.Format("{0} {1} {2}", MiddleLambda, FirstCrack, LastCrack);
         }
 

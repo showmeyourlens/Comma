@@ -129,14 +129,14 @@ namespace Subnetwork
         }
         public void PathSet(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine("{0} >> Received PATH SET from {1}", CC_Name, networkPackage.sendingClientId);
+            //TimeStamp.WriteLine("{0} >> Received PATH SET from {1}", CC_Name, networkPackage.sendingClientId);
 
             RCPath currentPath = domain.domainRC.paths.Find(x => x.status == ConnectionStatus.InProgress);
             Connection c = connections.Find(x => x.status == ConnectionStatus.InProgress);
             c.confirmationsNeeded--;
             if (c.confirmationsNeeded > 0)
             {
-                Console.WriteLine("{0} {1} :: {2} more PATH SET needed", TimeStamp.TAB, CC_Name, c.confirmationsNeeded);
+                Console.WriteLine("{0} {1} :: {2} more SET PATH RESPONSE needed", TimeStamp.TAB, CC_Name, c.confirmationsNeeded);
             }
             else
             {

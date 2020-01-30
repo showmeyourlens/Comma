@@ -20,14 +20,14 @@ namespace ClientNodeNS
         public CPCC(ClientNode clientNode)
         {
             this.clientNode = clientNode;
-            CPCC_Name = "CPCC_" + clientNode.domainId + "_" + clientNode.cloudCommunicator.emulationNodeId;
+            CPCC_Name = "CPCC_" + clientNode.subnetwork + "_" + clientNode.cloudCommunicator.emulationNodeId;
         }
 
         public void CallRequest(string toNode, string bandwidth)
         {
             NetworkPackage networkPackage = new NetworkPackage(
                 CPCC_Name,
-                "NCC_" + clientNode.domainId,
+                "NCC_" + clientNode.subnetwork.Split('_')[0],
                 Command.Call_Request_Request,
                 toNode + " " + bandwidth
                 );
@@ -37,7 +37,7 @@ namespace ClientNodeNS
 
         public void CallAccept(NetworkPackage networkPackage)
         {
-            //TimeStamp.WriteLine("{0} >> received CALL ACCEPT REQUEST from {1}", CPCC_Name, networkPackage.sendingClientId);
+            TimeStamp.WriteLine("{0} >> received CALL ACCEPT REQUEST from {1}", CPCC_Name, networkPackage.sendingClientId);
             clientNode.cloudCommunicator.Send(new NetworkPackage(
                 CPCC_Name,
                 networkPackage.sendingClientId,
@@ -50,7 +50,7 @@ namespace ClientNodeNS
 
         internal void CallConfirmed(NetworkPackage networkPackage)
         {
-            TimeStamp.WriteLine("{0} >> received CALL CONFIRMED from {1}", CPCC_Name, networkPackage.sendingClientId);
+            TimeStamp.WriteLine("{0} >> received CALL REQUEST RESPONSE from {1}", CPCC_Name, networkPackage.sendingClientId);
             clientNode.contactList.Find(x => x.receiverId == networkPackage.message).isConnection = true;
         }
     }

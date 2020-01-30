@@ -5,6 +5,7 @@
 			<C client="C1" ask="A_1">1</C>
 			<C client="C2" ask="A_2">2</C>
 			<C client="C3" ask="B">3</C>
+			<C client="C4" ask="A_2">4</C>
 		</Contacts>
 		<Links>
 			<Link firstEl="A_1" secEc="A_2" length="100" isDirect="false">2</Link>
@@ -16,6 +17,7 @@
 			<C client="C1" ask="OXC1">1</C>
 			<C client="C2" ask="A_2">2</C>
 			<C client="C3" ask="B">3</C>
+			<C client="C4" ask="A_2">4</C>
 		</Contacts>
 		<Links>
 			<Link firstEl="C1" secEc="OXC1" length="100" isDirect="true" firstObjectPort="10" secondObjectPort="63">1</Link>
@@ -27,6 +29,7 @@
 			<C client="C1" ask="A_1">1</C>
 			<C client="C2" ask="OXC4">2</C>
 			<C client="C3" ask="B">3</C>
+			<C client="C4" ask="OXC4">4</C>
 		</Contacts>
 		<Links>
 			<Link firstEl="A_1" secEc="OXC2" length="100" isDirect="true" firstObjectPort="65" secondObjectPort="111">2</Link>
@@ -35,6 +38,7 @@
 			<Link firstEl="OXC2" secEc="OXC4" length="100" isDirect="true" firstObjectPort="113" secondObjectPort="157">4</Link>
 			<Link firstEl="OXC3" secEc="B" length="100" isDirect="true" firstObjectPort="90" secondObjectPort="72">5</Link>
 			<Link firstEl="OXC4" secEc="C2" length="100" isDirect="true" firstObjectPort="159" secondObjectPort="12">7</Link>
+			<Link firstEl="OXC4" secEc="C4" length="100" isDirect="true" firstObjectPort="160" secondObjectPort="18">10</Link>
 		</Links>	
 	</RC>
 	<RC id="RC_B">

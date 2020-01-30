@@ -60,7 +60,7 @@ namespace Subnetwork
             networkPackage.MMsgType = Command.Link_Connection_Request;
 
             networkPackage.message = String.Join(" ", path.LRMids) + ":" + path.startCrack + " " + path.endCrack;
-            TimeStamp.WriteLine("{0} >> LINK CONNECTION REQUEST sent to {1}", CC_Name, networkPackage.sendingClientId);
+            TimeStamp.WriteLine("{0} >> LINK CONNECTION REQUEST sent to {1}", CC_Name, networkPackage.receivingClientId);
 
             subnetwork.domain.Send(networkPackage);
         }

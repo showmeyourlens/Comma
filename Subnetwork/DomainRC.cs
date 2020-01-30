@@ -144,7 +144,7 @@ namespace Subnetwork
                 Command.Path_Params_Found,
                 signalParams
                 );
-            TimeStamp.WriteLine("{0} >> CALCULATE PARAMS RESPONSE sent to {1}", RC_Name,  networkPackage.receivingClientId);
+            TimeStamp.WriteLine("{0} >> CALCULATE PARAMS RESPONSE sent to {1}", RC_Name,  response.receivingClientId);
             domain.domainCC.ParamsFound(response);
         }
 

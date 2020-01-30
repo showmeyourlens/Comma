@@ -206,6 +206,8 @@ namespace Subnetwork
                     }
                 }
             }
+            string communicate = String.Join(" ", messagesToSend.ToList().Select(x => x.receivingClientId));
+            Console.WriteLine("{0} {1} SET PATH will be send to: {2}", TimeStamp.TAB, RC_Name, communicate);
             subnetwork.domain.Send(messagesToSend.Pop());
         }
 
